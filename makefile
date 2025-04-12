@@ -12,15 +12,15 @@ FLAGS =-O3 -D _DEBUG -ggdb3 -Wall -Wextra  -Waggressive-loop-optimizations      
 		-Wvariadic-macros -Wno-missing-field-initializers -Wno-narrowing              				  \
 		-Wno-varargs -Wstack-protector                                                				  \
 		-fstack-protector -fstrict-overflow -flto -fno-omit-frame-pointer             				  \
-		-pie -fPIE -Werror=vla                                                        				 $|
-		-fsanitize=address,alignment,bool,bounds,enum,float-cast-overflow,float-divide-by-zero,      $\
-		integer-divide-by-zero,leak,nonnull-attribute,null,object-size,return,                       $\
+		-pie -fPIE -Werror=vla                                                        				  \
+		-fsanitize=address,alignment,bool,bounds,enum,float-cast-overflow,float-divide-by-zero,$\
+		integer-divide-by-zero,leak,nonnull-attribute,null,object-size,return,$\
 		returns-nonnull-attribute,shift,signed-integer-overflow,undefined,unreachable,vla-bound,vptr
 
 CFLAGS = -c $(FLAGS)
 LDFLAGS = $(FLAGS) -lm
 
-SOURCES_LIST = main.c list.c tools.c
+SOURCES_LIST = main.c list.c tools.c hashtbl.c
 
 SOURCES = $(SOURCES_LIST:%=src/%)
 OBJECTS = $(SOURCES_LIST:%.c=build/%.o)
