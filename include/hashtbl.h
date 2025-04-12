@@ -9,4 +9,6 @@ struct HashTable_t
 
 struct HashTable_t* hashT_ctor (size_t size);
 
+int hashT_dtor (struct HashTable_t* hsh_t);
+
 #endif

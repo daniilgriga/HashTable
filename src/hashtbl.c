@@ -25,3 +25,19 @@ struct HashTable_t* hashT_ctor (size_t size)
 
     return hsh_t;
 }
+
+int hashT_dtor (struct HashTable_t* hsh_t)
+{
+    assert (hsh_t);
+
+    for (size_t i = 0; i < hsh_t->size; i++)
+    {
+        if (hsh_t->buckets[i] != NULL)
+            list_dtor (hsh_t->buckets[i]);
+    }
+
+    free (hsh_t->buckets);
+    free (hsh_t);
+
+    return NO_ERRORS;
+}
