@@ -19,12 +19,14 @@ struct Node_t* node_insert (const char* data)
 
     size_t data_len = strlen (data);
 
-    char* word = calloc (data_len, sizeof (char));
-    if (new_node != NULL)
+    char* word = calloc (data_len + 1, sizeof (char));
+    if (word == NULL)
     {
         ERROR_MESSAGE (NULL_PTR_ERR)
         return NULL;
     }
+
+    memcpy (word, data, data_len + 1);
 
     new_node->data = word;
     new_node->next = NULL;
