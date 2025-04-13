@@ -9,4 +9,6 @@ char* ReadInBuffer (FILE* file_ptr, const long numb_symb);
 
 enum Errors CloseFile (FILE* file_ptr);
 
+char* MakeBuffer (const char* filename, long* numb_symb);
+
 #endif // FILE_H
