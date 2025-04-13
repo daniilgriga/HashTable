@@ -60,7 +60,7 @@ int hashT_fill (struct HashTable_t* hashT_ptr, const char* filename)
     assert (hashT_ptr);
 
     long numb_symb = 0;
-    char* buffer = MakeBuffer (filename, &numb_symb); // ! free (buffer)
+    char* buffer = MakeBuffer (filename, &numb_symb);
 
     long i = 0;
     while (i < numb_symb)
@@ -71,25 +71,28 @@ int hashT_fill (struct HashTable_t* hashT_ptr, const char* filename)
         sscanf (buffer, " %s %ln ", word, &n);
         i += n;
 
-        int status = hashT_search (hashT_ptr, word);
+        uint32_t hash = 0;
+        int status = hashT_search (hashT_ptr, word, &hash);
         if (!status)
-            hashT_insert ();
+            hashT_insert (hashT_ptr, word, &hash);
 
         // maybe increments some value
     }
 
-    // ...
+    free (buffer);
+
+    return 0;
 }
 
-int hashT_search (struct HashTable_t* hashT_ptr, const char* data)
+int hashT_search (struct HashTable_t* hashT_ptr, const char* data, uint32_t* hash)
 {
     assert (hashT_ptr);
     assert (data);
 
-    uint32_t hash = DJB2_hash (data);
-    hash %= (uint32_t) hashT_ptr->size;
+    *hash = DJB2_hash (data);
+    *hash %= (uint32_t) hashT_ptr->size;
 
-    struct Node_t* node = hashT_ptr->buckets[hash];
+    struct Node_t* node = hashT_ptr->buckets[*hash];
     if (node == NULL)
         return 1;
 
@@ -100,4 +103,22 @@ int hashT_search (struct HashTable_t* hashT_ptr, const char* data)
     return 0;
 }
 
-// int hashT_insert (struct HashTable_t* hashT_ptr, const char* data)
+int hashT_insert (struct HashTable_t* hashT_ptr, const char* data, uint32_t* hash)
+{
+    assert (hashT_ptr);
+    assert (data);
+    assert (hash);
+
+    struct Node_t* curr_bucket = hashT_ptr->buckets[*hash];
+    while (curr_bucket != NULL)
+        curr_bucket = curr_bucket->next;
+
+    curr_bucket = node_insert (curr_bucket, data);
+    if (curr_bucket == NULL)
+    {
+        fprintf (stderr, "ERROR with inserting word in bucket\n");
+        assert (curr_bucket);
+    }
+
+    return 0;
+}
