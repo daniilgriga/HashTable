@@ -11,4 +11,6 @@ struct Node_t* node_insert (const char* data);
 
 int list_dtor (struct Node_t* node);
 
+int list_search (struct Node_t* node, const char* data);
+
 #endif // LIST_H

@@ -51,3 +51,20 @@ int list_dtor (struct Node_t* node)
 
     return NO_ERRORS;
 }
+
+int list_search (struct Node_t* node, const char* data)
+{
+    assert (node);
+    assert (data);
+
+    struct Node_t* curr = node;
+    while (curr != NULL)
+    {
+        if (strcmp (curr->data, data) == 0)
+            return 1;
+
+        curr = curr->next;
+    }
+
+    return 0;
+}
