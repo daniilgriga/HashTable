@@ -3,14 +3,14 @@
 
 enum Errors
 {
-         FILE_SIZE_ERR = -1,
-             NO_ERRORS =  0,
-          NULL_PTR_ERR =  1,
-         FILE_OPEN_ERR =  3,
-        FILE_CLOSE_ERR =  4,
-        CREATE_BUF_ERR =  5,
-          READ_BUF_ERR =  6,
-         WRITE_BUF_ERR =  7
+  NO_ERRORS,
+  FILE_SIZE_ERR,
+  NULL_PTR_ERR,
+  FILE_OPEN_ERR,
+  FILE_CLOSE_ERR,
+  CREATE_BUF_ERR,
+  READ_BUF_ERR,
+  WRITE_BUF_ERR
 };
 
 #endif // ERRORS_H

@@ -1,6 +1,8 @@
 #ifndef TOOLS_H
 #define TOOLS_H
 
+#include <stdio.h>
+
 #include "colors.h"
 #include "errors.h"
 
@@ -10,7 +12,7 @@
             if (temp != NO_ERRORS)                                                                              \
             {                                                                                                   \
                 fprintf (stderr, "\n" PURPLE_TEXT ("in %s - %s:%d:") RED_TEXT (" ERROR <%d>:") " %s. " "\n\n",  \
-                         __FILE__, __FUNCTION__, __LINE__, temp, ErrorsMessenger(temp));                        \
+                         __FILE__, __FUNCTION__, __LINE__, (int) temp, ErrorsMessenger(temp));                  \
                 return temp;                                                                                    \
             }                                                                                                   \
         }
@@ -20,7 +22,7 @@
             enum Errors temp = status;                                                                          \
             if (temp != NO_ERRORS)                                                                              \
                 fprintf (stderr, "\n" PURPLE_TEXT ("in %s - %s:%d:") RED_TEXT (" ERROR <%d>:") " %s. " "\n\n",  \
-                         __FILE__, __FUNCTION__, __LINE__, temp, ErrorsMessenger(temp));                        \
+                         __FILE__, __FUNCTION__, __LINE__, (int) temp, ErrorsMessenger(temp));                  \
         }
 
 const char* ErrorsMessenger (enum Errors status);
