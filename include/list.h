@@ -9,8 +9,8 @@ struct Node_t
 
 struct Node_t* node_insert (struct Node_t* parent, const char* data);
 
-int list_dtor (struct Node_t* node);
+void list_dtor (struct Node_t* node);
 
-int list_search (struct Node_t* node, const char* data);
+struct Node_t* list_search (struct Node_t* node, const char* data);
 
 #endif // LIST_H

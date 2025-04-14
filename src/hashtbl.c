@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <ctype.h>
 
 #include "hashtbl.h"
 #include "file.h"
@@ -63,21 +64,29 @@ int hashT_fill (struct HashTable_t* hashT_ptr, const char* filename)
     char* buffer = MakeBuffer (filename, &numb_symb);
     char* old_buffer = buffer;
 
-    long i = 0;
-    while (i < numb_symb)
+    char* ptr = buffer;
+    while (*ptr)
     {
-        char word[32] = {};
-        long n = 0;
+        while (*ptr && !isalpha(*ptr) && !isdigit(*ptr))
+        {
+            *ptr = '\0';
+            ptr++;
+        }
 
-        sscanf (buffer, " %s %ln ", word, &n);
-        i += n;
-        buffer += n;
+        if (!*ptr) break;
 
-        //fprintf (stderr, "In hashT_fill:\n\t\t>>> %s ", word);
+        char* word = ptr;
+        while (*ptr && (isalpha(*ptr) || isdigit(*ptr)))
+            ptr++;
+
+        if (*ptr)
+        {
+            *ptr = '\0';
+            ptr++;
+        }
 
         uint32_t hash = 0;
         int status = hashT_search (hashT_ptr, word, &hash);
-        //fprintf (stderr, "status in search: <%d>\n", status);
         if (status)
             hashT_insert (hashT_ptr, word, &hash);
 
@@ -101,8 +110,8 @@ int hashT_search (struct HashTable_t* hashT_ptr, const char* data, uint32_t* has
     if (node == NULL)
         return 1;
 
-    int status = list_search (node, data);
-    if (!status)
+    struct Node_t* found_node = list_search (node, data);
+    if (found_node == NULL)
         return 1;
 
     return 0;

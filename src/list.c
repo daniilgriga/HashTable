@@ -26,10 +26,9 @@ struct Node_t* node_insert (struct Node_t* parent, const char* data)
         return NULL;
     }
 
-    memcpy (word, data, data_len + 1);
+    memcpy (word, data, data_len);
 
     new_node->data = word;
-    new_node->next = NULL;
 
     if (parent != NULL)
         parent->next = new_node;
@@ -37,37 +36,32 @@ struct Node_t* node_insert (struct Node_t* parent, const char* data)
     return new_node;
 }
 
-int list_dtor (struct Node_t* node)
+void list_dtor (struct Node_t* node)
 {
     assert (node);
 
-    struct Node_t* curr = node;
-
-    while (curr)
+    while (node)
     {
-        struct Node_t* f_free = curr;
-        curr = curr->next;
+        struct Node_t* f_free = node;
+        node = node->next;
 
         free (f_free->data);
         free (f_free);
     }
-
-    return NO_ERRORS;
 }
 
-int list_search (struct Node_t* node, const char* data)
+struct Node_t* list_search (struct Node_t* node, const char* data)
 {
     assert (node);
     assert (data);
 
-    struct Node_t* curr = node;
-    while (curr != NULL)
+    while (node)
     {
-        if (strcmp (curr->data, data) == 0)
-            return 1;
+        if (strcmp (node->data, data) == 0)
+            return node;
 
-        curr = curr->next;
+        node = node->next;
     }
 
-    return 0;
+    return NULL;
 }
