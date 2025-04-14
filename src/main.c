@@ -9,9 +9,11 @@ int main (void)
 
     hashT_fill (hashT, "text.txt");
 
+    get_dump (hashT, stdout);
+
     hashT_dtor (hashT);
 
     return 0;
 }
 
-//! for graphiz >>> './build/test | dot -Tpng -o linked_list.png'
+// FIXME - words in HT with pucntuation signs

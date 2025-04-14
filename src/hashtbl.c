@@ -73,11 +73,11 @@ int hashT_fill (struct HashTable_t* hashT_ptr, const char* filename)
         i += n;
         buffer += n;
 
-        fprintf (stderr, "In hashT_fill:\n\t\t>>> %s ", word);
+        //fprintf (stderr, "In hashT_fill:\n\t\t>>> %s ", word);
 
         uint32_t hash = 0;
         int status = hashT_search (hashT_ptr, word, &hash);
-        fprintf (stderr, "status in search: <%d>\n", status);
+        //fprintf (stderr, "status in search: <%d>\n", status);
         if (status)
             hashT_insert (hashT_ptr, word, &hash);
 
@@ -121,12 +121,59 @@ int hashT_insert (struct HashTable_t* hashT_ptr, const char* data, uint32_t* has
         return 0;
     }
 
-    fprintf (stderr, "\t\t\t curr_bucket = [%p]\n", curr_bucket);
+    //fprintf (stderr, "\t\t\t curr_bucket = [%p]\n", curr_bucket);
     while (curr_bucket->next != NULL)
         curr_bucket = curr_bucket->next;
-    fprintf (stderr, "\t\t\t curr_bucket = [%p] after while\n", curr_bucket);
+    //fprintf (stderr, "\t\t\t curr_bucket = [%p] after while\n", curr_bucket);
 
     curr_bucket = node_insert (curr_bucket, data);
+
+    return 0;
+}
+
+int get_dump (struct HashTable_t* hashT_ptr, FILE* file)
+{
+    assert (hashT_ptr);
+    assert (file);
+
+    fprintf (file, "digraph HashTable {\n");
+    fprintf (file, "    node [shape=record];\n");
+    fprintf (file, "    rankdir=HT;\n");
+    fprintf (file, "    splines=false;\n");
+    fprintf (file, "    hashtable [style=filled, fillcolor=lightblue, height=0.8, width=%ld.0 label=\"", hashT_ptr->size);
+
+    for (int i = 0; i < hashT_ptr->size; i++)
+    {
+        fprintf (file, "<f%d> [%d]", i, i);
+        if (i < hashT_ptr->size - 1)
+            fprintf (file, "|");
+    }
+
+    fprintf (file, "\", color=purple];\n");
+
+    for (long i = 0; i < hashT_ptr->size; i++)
+    {
+        struct Node_t* curr = hashT_ptr->buckets[i];
+        long lists_cntr = 0;
+
+        if (!curr) continue;
+
+        while (curr)
+        {
+            fprintf (file, "    node%ld_%ld [style=filled, fillcolor=pink, label=\"%s\", color=blue];\n", i, lists_cntr, curr->data);
+
+            if (lists_cntr > 0)
+                fprintf (file, "    node%ld_%ld -> node%ld_%ld;\n", i, lists_cntr-1, i, lists_cntr);
+
+            curr = curr->next;
+            lists_cntr++;
+        }
+
+        if (hashT_ptr->buckets[i] && hashT_ptr->buckets[i]->data)
+            fprintf (file, "    hashtable:f%ld -> node%ld_0;\n", i, i);
+    }
+
+    fprintf (file, "}\n");
 
     return 0;
 }

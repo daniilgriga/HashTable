@@ -21,4 +21,6 @@ int hashT_search (struct HashTable_t* hashT_ptr, const char* data, uint32_t* has
 
 int hashT_insert (struct HashTable_t* hashT_ptr, const char* data, uint32_t* hash);
 
+int get_dump (struct HashTable_t* hashT_ptr, FILE* file);
+
 #endif
