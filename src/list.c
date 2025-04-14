@@ -6,7 +6,7 @@
 #include "list.h"
 #include "tools.h"
 
-struct Node_t* node_insert (const char* data)
+struct Node_t* node_insert (struct Node_t* parent, const char* data)
 {
     assert (data);
 
@@ -31,6 +31,9 @@ struct Node_t* node_insert (const char* data)
     new_node->data = word;
     new_node->next = NULL;
 
+    if (parent != NULL)
+        parent->next = new_node;
+
     return new_node;
 }
 
@@ -43,9 +46,9 @@ int list_dtor (struct Node_t* node)
     while (curr)
     {
         struct Node_t* f_free = curr;
-        curr = node->next;
+        curr = curr->next;
 
-        free (f_free->data);  //!
+        free (f_free->data);
         free (f_free);
     }
 

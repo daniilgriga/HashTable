@@ -61,6 +61,7 @@ int hashT_fill (struct HashTable_t* hashT_ptr, const char* filename)
 
     long numb_symb = 0;
     char* buffer = MakeBuffer (filename, &numb_symb);
+    char* old_buffer = buffer;
 
     long i = 0;
     while (i < numb_symb)
@@ -70,16 +71,20 @@ int hashT_fill (struct HashTable_t* hashT_ptr, const char* filename)
 
         sscanf (buffer, " %s %ln ", word, &n);
         i += n;
+        buffer += n;
+
+        fprintf (stderr, "In hashT_fill:\n\t\t>>> %s ", word);
 
         uint32_t hash = 0;
         int status = hashT_search (hashT_ptr, word, &hash);
-        if (!status)
+        fprintf (stderr, "status in search: <%d>\n", status);
+        if (status)
             hashT_insert (hashT_ptr, word, &hash);
 
         // maybe increments some value
     }
 
-    free (buffer);
+    free (old_buffer);
 
     return 0;
 }
@@ -97,7 +102,7 @@ int hashT_search (struct HashTable_t* hashT_ptr, const char* data, uint32_t* has
         return 1;
 
     int status = list_search (node, data);
-    if (status)
+    if (!status)
         return 1;
 
     return 0;
@@ -110,15 +115,18 @@ int hashT_insert (struct HashTable_t* hashT_ptr, const char* data, uint32_t* has
     assert (hash);
 
     struct Node_t* curr_bucket = hashT_ptr->buckets[*hash];
-    while (curr_bucket != NULL)
-        curr_bucket = curr_bucket->next;
-
-    curr_bucket = node_insert (curr_bucket, data);
     if (curr_bucket == NULL)
     {
-        fprintf (stderr, "ERROR with inserting word in bucket\n");
-        assert (curr_bucket);
+        hashT_ptr->buckets[*hash] = node_insert (curr_bucket, data);
+        return 0;
     }
+
+    fprintf (stderr, "\t\t\t curr_bucket = [%p]\n", curr_bucket);
+    while (curr_bucket->next != NULL)
+        curr_bucket = curr_bucket->next;
+    fprintf (stderr, "\t\t\t curr_bucket = [%p] after while\n", curr_bucket);
+
+    curr_bucket = node_insert (curr_bucket, data);
 
     return 0;
 }

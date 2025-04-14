@@ -20,7 +20,7 @@ FLAGS =-O3 -D _DEBUG -ggdb3 -Wall -Wextra  -Waggressive-loop-optimizations      
 CFLAGS = -c $(FLAGS)
 LDFLAGS = $(FLAGS) -lm
 
-SOURCES_LIST = main.c list.c tools.c hashtbl.c
+SOURCES_LIST = main.c list.c tools.c hashtbl.c file.c
 
 SOURCES = $(SOURCES_LIST:%=src/%)
 OBJECTS = $(SOURCES_LIST:%.c=build/%.o)

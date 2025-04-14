@@ -3,11 +3,11 @@
 
 struct Node_t
 {
-    const char* data;
+    char* data;
     struct Node_t* next;
 };
 
-struct Node_t* node_insert (const char* data);
+struct Node_t* node_insert (struct Node_t* parent, const char* data);
 
 int list_dtor (struct Node_t* node);
 

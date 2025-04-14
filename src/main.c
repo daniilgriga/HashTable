@@ -3,14 +3,15 @@
 #include "list.h"
 #include "hashtbl.h"
 
-int main ()
+int main (void)
 {
-    struct HashTable_t* hTable = hashT_ctor (1000);
-    struct Node_t* node = NULL;
+    struct HashTable_t* hashT = hashT_ctor (10);
 
-    hTable->buckets[3] = node;
+    hashT_fill (hashT, "text.txt");
 
-    hashT_dtor (hTable);
+    hashT_dtor (hashT);
 
     return 0;
 }
+
+//! for graphiz >>> './build/test | dot -Tpng -o linked_list.png'
