@@ -5,7 +5,7 @@
 
 int main (void)
 {
-    struct HashTable_t* hashT = hashT_ctor (10);
+    struct HashTable_t* hashT = hashT_ctor (50);
 
     hashT_fill (hashT, "text.txt");
 
@@ -15,5 +15,3 @@ int main (void)
 
     return 0;
 }
-
-// FIXME - words in HT with pucntuation signs

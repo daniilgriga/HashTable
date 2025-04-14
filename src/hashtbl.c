@@ -21,14 +21,16 @@ uint32_t DJB2_hash (const char* str)
 
 struct HashTable_t* hashT_ctor (long size)
 {
-    struct HashTable_t* hsh_t = calloc (1, sizeof (struct HashTable_t));
+    struct HashTable_t* hsh_t = (struct HashTable_t*) calloc (1, sizeof (struct HashTable_t));
     if (hsh_t == NULL)
     {
         ERROR_MESSAGE (NULL_PTR_ERR)
         return NULL;
     }
 
-    hsh_t->buckets = calloc ((size_t) size, sizeof (struct Node_t*));
+    // ? maybe one calloc -> buckets starts after struct Hashtable_t* ? //
+
+    hsh_t->buckets = (struct Node_t**) calloc ((size_t) size, sizeof (struct Node_t*));
     if (hsh_t->buckets == NULL)
     {
         ERROR_MESSAGE (NULL_PTR_ERR)
@@ -60,9 +62,8 @@ int hashT_fill (struct HashTable_t* hashT_ptr, const char* filename)
 {
     assert (hashT_ptr);
 
-    long numb_symb = 0;
-    char* buffer = MakeBuffer (filename, &numb_symb);
-    char* old_buffer = buffer;
+    long num_symb = 0;
+    char* buffer = MakeBuffer (filename, &num_symb);
 
     char* ptr = buffer;
     while (*ptr)
@@ -93,7 +94,7 @@ int hashT_fill (struct HashTable_t* hashT_ptr, const char* filename)
         // maybe increments some value
     }
 
-    free (old_buffer);
+    free (buffer);
 
     return 0;
 }

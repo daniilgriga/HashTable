@@ -47,14 +47,14 @@ long FileSize (FILE* file_ptr)
 
 #undef FILE_SIZE_CHECK
 
-char* ReadInBuffer (FILE* file_ptr, const long numb_symb)
+char* ReadInBuffer (FILE* file_ptr, const long num_symb)
 {
-    char* buffer = (char*) calloc ( (size_t) numb_symb + 1, sizeof (char) );               // EOF -> +1
+    char* buffer = (char*) calloc ( (size_t) num_symb + 1, sizeof (char) );               // EOF -> +1
     if (buffer == NULL)
         return NULL;
 
-    size_t read_symb = fread (buffer, sizeof (buffer[0]), (size_t) numb_symb, file_ptr);
-    if ( read_symb != (size_t) numb_symb)
+    size_t read_symb = fread (buffer, sizeof (buffer[0]), (size_t) num_symb, file_ptr);
+    if ( read_symb != (size_t) num_symb)
     {
         perror ("The following error occurred");
         return NULL;
@@ -76,20 +76,20 @@ enum Errors CloseFile (FILE* file_ptr)
     return NO_ERRORS;
 }
 
-char* MakeBuffer (const char* filename, long* numb_symb)
+char* MakeBuffer (const char* filename, long* num_symb)
 {
     assert (filename);
-    assert (numb_symb);
+    assert (num_symb);
 
     FILE* file = OpenFile (filename, "rb");
     if ( file == NULL )
         return NULL;
 
-    *numb_symb = FileSize (file);
-    if (*numb_symb == -1L)
+    *num_symb = FileSize (file);
+    if (*num_symb == -1L)
         return NULL;
 
-    char* buffer = ReadInBuffer (file, *numb_symb);
+    char* buffer = ReadInBuffer (file, *num_symb);
 
     enum Errors err = CloseFile (file);
     if (err != NO_ERRORS)
