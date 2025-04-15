@@ -1,5 +1,5 @@
-#ifndef HASHTBL
-#define HASHTBL
+#ifndef HASHTBL_H
+#define HASHTBL_H
 
 #include <stdint.h>
 
@@ -23,4 +23,6 @@ int hashT_insert (struct HashTable_t* hashT_ptr, const char* data, uint32_t* has
 
 int get_dump (struct HashTable_t* hashT_ptr, FILE* file);
 
-#endif
+void get_data_for_histo (struct HashTable_t* hashT_ptr);
+
+#endif // HASHTBL_H

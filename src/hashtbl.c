@@ -91,7 +91,7 @@ int hashT_fill (struct HashTable_t* hashT_ptr, const char* filename)
         if (status)
             hashT_insert (hashT_ptr, word, &hash);
 
-        // maybe increments some value
+        // ? maybe increments some value ? //
     }
 
     free (buffer);
@@ -186,4 +186,28 @@ int get_dump (struct HashTable_t* hashT_ptr, FILE* file)
     fprintf (file, "}\n");
 
     return 0;
+}
+
+void get_data_for_histo (struct HashTable_t* hashT_ptr)
+{
+    FILE* file = OpenFile ("data.xslx", "wb");
+    assert (file);
+
+    for (long i = 0; i < hashT_ptr->size; i++)
+    {
+        fprintf (file, "%ld,", i);
+
+        int j = 0;
+        struct Node_t* ptr = hashT_ptr->buckets[i];
+
+        while (ptr)
+        {
+            j++;
+            ptr = ptr->next;
+        }
+
+        fprintf (file, "%d\n", j);
+    }
+
+    CloseFile (file);
 }
