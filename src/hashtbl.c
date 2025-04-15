@@ -8,18 +8,40 @@
 #include "list.h"
 #include "tools.h"
 
-uint32_t DJB2_hash (const char* str)
+uint32_t DJB2_hash (const char* key)
 {
     uint32_t hash = 5381;
     unsigned char c;
 
-    while ((c = (unsigned char) *str++) != 0)
+    while ((c = (unsigned char) *key++) != 0)
         hash = (((hash << 5) + hash) + (uint32_t) c);
 
     return hash;
 }
 
-struct HashTable_t* hashT_ctor (long size)
+uint32_t ASCII_hash (const char* key)
+{
+    uint32_t hash = 0;
+    while (*key)
+        hash += (uint32_t) ((unsigned char) *key++);
+
+    return hash;
+}
+
+HashFunction select_function (enum Functions name)
+{
+    switch (name)
+    {
+        case DJB2:  fprintf (stderr, "DJB\n");   return DJB2_hash;
+        case ASCII: fprintf (stderr, "ASCII\n"); return ASCII_hash;
+
+        default:
+            fprintf (stderr, "There is no that hash function\n");
+            return NULL;
+    }
+}
+
+struct HashTable_t* hashT_ctor (long size, enum Functions name)
 {
     struct HashTable_t* hsh_t = (struct HashTable_t*) calloc (1, sizeof (struct HashTable_t));
     if (hsh_t == NULL)
@@ -38,6 +60,7 @@ struct HashTable_t* hashT_ctor (long size)
     }
 
     hsh_t->size = size;
+    hsh_t->func_ptr = select_function (name);
 
     return hsh_t;
 }
@@ -104,7 +127,7 @@ int hashT_search (struct HashTable_t* hashT_ptr, const char* data, uint32_t* has
     assert (hashT_ptr);
     assert (data);
 
-    *hash = DJB2_hash (data);
+    *hash = hashT_ptr->func_ptr (data);
     *hash %= (uint32_t) hashT_ptr->size;
 
     struct Node_t* node = hashT_ptr->buckets[*hash];
@@ -188,10 +211,19 @@ int get_dump (struct HashTable_t* hashT_ptr, FILE* file)
     return 0;
 }
 
-void get_data_for_histo (struct HashTable_t* hashT_ptr)
+void get_data_for_histo (struct HashTable_t* hashT_ptr, enum Functions name)
 {
     FILE* file = OpenFile ("data.txt", "wb");
     assert (file);
+
+    switch (name)
+    {
+        case DJB2:  fprintf (file, "DJB2\n");  break;
+        case ASCII: fprintf (file, "ASCII\n"); break;
+
+        default:
+            fprintf (file, "I dont know wtf is this function\n");
+    }
 
     for (long i = 0; i < hashT_ptr->size; i++)
     {
