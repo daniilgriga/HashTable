@@ -190,7 +190,7 @@ int get_dump (struct HashTable_t* hashT_ptr, FILE* file)
 
 void get_data_for_histo (struct HashTable_t* hashT_ptr)
 {
-    FILE* file = OpenFile ("data.xslx", "wb");
+    FILE* file = OpenFile ("data.txt", "wb");
     assert (file);
 
     for (long i = 0; i < hashT_ptr->size; i++)
