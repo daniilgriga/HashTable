@@ -1,3 +1,7 @@
+![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
+![C](https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+
 # Hash Table
 
 ![image](img/ht.png)
@@ -27,4 +31,4 @@ Lab work on programming in the [ded32](https://github.com/ded32) course on optim
 
 2. I load the number of bucket and the number of elements in it in `data.txt`.
 
-3. I use histo.py to build histograms using the data from `data.txt`.
+3. I use `histo.py` to build histograms using the data from `data.txt`.
