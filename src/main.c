@@ -4,10 +4,10 @@
 #include "hashtbl.h"
 #include "hash_funcs.h"
 
-const char* filename = "Fahrenhait_451.txt";
-const int HT_SIZE = 1000;
+const char* filename = "War_and_Peace.txt";
+const int HT_SIZE = 2000;
 
-#define FUNC_NAME LENGTH
+#define FUNC_NAME XXHASH
 // LENGTH
 // ASCII
 // SUM_POS

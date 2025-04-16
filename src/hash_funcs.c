@@ -103,7 +103,7 @@ uint32_t hash_JENKINS (const char* key)
     return hash;
 }
 
-uint32_t hash_XXHASH (const char* key)
+uint32_t hash_XXHASH (const char* key)  // ! simplified version ! //
 {
     uint32_t hash = 0;
     uint32_t seed = 0x1e3b2d4f;
