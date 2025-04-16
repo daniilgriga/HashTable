@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include "hash_funcs.h"
+
 typedef unsigned int (*HashFunction)(const char*);
 
 struct HashTable_t
@@ -11,16 +13,6 @@ struct HashTable_t
     long size;
     HashFunction func_ptr;
 };
-
-enum Functions
-{
-    DJB2,
-    ASCII,
-};
-
-uint32_t DJB2_hash (const char* str);
-
-uint32_t ASCII_hash (const char* key);
 
 HashFunction select_function (enum Functions name);
 

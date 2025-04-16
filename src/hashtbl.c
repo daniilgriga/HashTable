@@ -8,32 +8,20 @@
 #include "list.h"
 #include "tools.h"
 
-uint32_t DJB2_hash (const char* key)
-{
-    uint32_t hash = 5381;
-    unsigned char c;
-
-    while ((c = (unsigned char) *key++) != 0)
-        hash = (((hash << 5) + hash) + (uint32_t) c);
-
-    return hash;
-}
-
-uint32_t ASCII_hash (const char* key)
-{
-    uint32_t hash = 0;
-    while (*key)
-        hash += (uint32_t) ((unsigned char) *key++);
-
-    return hash;
-}
-
 HashFunction select_function (enum Functions name)
 {
     switch (name)
     {
-        case DJB2:  fprintf (stderr, "DJB\n");   return DJB2_hash;
-        case ASCII: fprintf (stderr, "ASCII\n"); return ASCII_hash;
+        case LENGTH:  fprintf (stderr, "LENGTH\n");  return hash_LENGTH;
+        case ASCII:   fprintf (stderr, "ASCII\n");   return hash_ASCII;
+        case SUM_POS: fprintf (stderr, "SUM_POS\n"); return hash_SUM_POS;
+        case MULT:    fprintf (stderr, "MULT\n");    return hash_MULT;
+        case DJB2:    fprintf (stderr, "DJB2\n");    return hash_DJB2;
+        case SDBM:    fprintf (stderr, "SDBM\n");    return hash_SDBM;
+        case CRC32:   fprintf (stderr, "CRC32\n");   return hash_CRC32;
+        case FNV_1a:  fprintf (stderr, "FNV_1a\n");  return hash_FNV_1a;
+        case JENKINS: fprintf (stderr, "JENKINS\n"); return hash_JENKINS;
+        case XXHASH:  fprintf (stderr, "XXHASH\n");  return hash_XXHASH;
 
         default:
             fprintf (stderr, "There is no that hash function\n");
@@ -218,8 +206,16 @@ void get_data_for_histo (struct HashTable_t* hashT_ptr, enum Functions name)
 
     switch (name)
     {
-        case DJB2:  fprintf (file, "DJB2\n");  break;
-        case ASCII: fprintf (file, "ASCII\n"); break;
+        case LENGTH:  fprintf (file, "LENGTH\n");  break;
+        case ASCII:   fprintf (file, "ASCII\n");   break;
+        case SUM_POS: fprintf (file, "SUM_POS\n"); break;
+        case MULT:    fprintf (file, "MULT\n");    break;
+        case DJB2:    fprintf (file, "DJB2\n");    break;
+        case SDBM:    fprintf (file, "SDBM\n");    break;
+        case CRC32:   fprintf (file, "CRC32\n");   break;
+        case FNV_1a:  fprintf (file, "FNV_1a\n");  break;
+        case JENKINS: fprintf (file, "JENKINS\n"); break;
+        case XXHASH:  fprintf (file, "XXHASH\n");  break;
 
         default:
             fprintf (file, "I dont know wtf is this function\n");

@@ -2,11 +2,22 @@
 
 #include "list.h"
 #include "hashtbl.h"
+#include "hash_funcs.h"
 
 const char* filename = "Fahrenhait_451.txt";
 const int HT_SIZE = 1000;
 
-#define FUNC_NAME ASCII
+#define FUNC_NAME LENGTH
+// LENGTH
+// ASCII
+// SUM_POS
+// MULT
+// DJB2
+// SDBM
+// CRC32
+// FNV_1a
+// JENKINS
+// XXHASH
 
 int main (void)
 {
