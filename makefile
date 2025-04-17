@@ -38,3 +38,6 @@ build/%.o: src/%.c
 
 clean:
 	rm -f build/*.o $(EXECUTABLE)
+
+callgrind:
+	valgrind --dump-instr=yes --collect-jumps=yes --tool=callgrind --callgrind-out-file=test/callgrind/callgrind.out.$(prog) ./build/test

@@ -1,10 +1,10 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-with open ('data.txt', 'r') as file:
+with open ('test/data.txt', 'r') as file:
     title = file.readline().strip()
 
-df = pd.read_csv ('data.txt', header=None, names=['n', 'm'], skiprows=1)
+df = pd.read_csv ('test/data.txt', header=None, names=['n', 'm'], skiprows=1)
 
 # ===== check data ===== #
 print ("Title:", title)
@@ -16,6 +16,7 @@ n = df['n']
 m = df['m']
 
 max_elements = m.max()
+variance = m.var()
 
 plt.figure (figsize =(10, 6))
 plt.bar (n, m, color='skyblue', edgecolor='purple')
@@ -26,7 +27,9 @@ plt.title (title)
 
 plt.grid (True, alpha=0.3)
 
-plt.text (0.02, 0.96, f'Max collisions: {max_elements}',
+plt.ylim(0, 80)
+
+plt.text (0.02, 0.96, f'Max collisions: {max_elements}\nVariance: {variance:.2f}',
           transform=plt.gca().transAxes,
           fontsize=12,
           verticalalignment='top',

@@ -201,7 +201,7 @@ int get_dump (struct HashTable_t* hashT_ptr, FILE* file)
 
 void get_data_for_histo (struct HashTable_t* hashT_ptr, enum Functions name)
 {
-    FILE* file = OpenFile ("data.txt", "wb");
+    FILE* file = OpenFile ("test/data.txt", "wb");
     assert (file);
 
     switch (name)
