@@ -12,19 +12,19 @@ Lab work on programming in the [ded32](https://github.com/ded32) course on optim
 
 # Context
 
- - [Research of hash functions](#research)
+ - [Research of hash functions](#research-of-hash-functions)
     - [LENGTH](#length)
     - [ASCII](#ascii)
-    - [SUM_POS](#sumpos)
+    - [SUM_POS](#sum_pos)
     - [MULT](#mult)
-    - [DJB2](#djb)
+    - [DJB2](#djb2)
     - [SDBM](#sdbm)
-    - [CRC32](#crc)
-    - [FNV_1a](#fnv)
+    - [CRC32](#crc32)
+    - [FNV_1a](#fnv_1a)
     - [JENKINS](#jenkins)
     - [XXHASH](#xxhash)
     - [Conclusion](#conclusion)
- - [Optimization of hash table](#optimization)
+ - [Optimization of hash table](#optimization-of-hash-table)
 
 # Research of hash functions
 
