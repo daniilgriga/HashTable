@@ -12,7 +12,7 @@ Lab work on programming in the [ded32](https://github.com/ded32) course on optim
 
 # Context
 
- - [Research of hash functions](#research-of-hash-functions)
+- [Research of hash functions](#research-of-hash-functions)
     - [LENGTH](#length)
     - [ASCII](#ascii)
     - [SUM_POS](#sum_pos)
@@ -24,13 +24,15 @@ Lab work on programming in the [ded32](https://github.com/ded32) course on optim
     - [JENKINS](#jenkins)
     - [XXHASH](#xxhash)
     - [Conclusion](#conclusion)
- - [Optimization of hash table](#optimization-of-hash-table)
+- [Optimization of hash table](#optimization-of-hash-table)
+    - [Hardware](#hardware)
+    - [Profiling and set targets](#profiling-and-set-targets)
 
 # Research of hash functions
 
 1. To investigate hash functions, I load `Leo Tolstoy's text “War and Peace”` into a hash table.
 
-2. I load the number of bucket and the number of elements in it in `data.txt`.
+2. I load the number of bucket (`2000`) and the number of elements in it in `data.txt`.
 
 3. I use `histo.py` to build histograms using the data from `data.txt`.
 
@@ -304,3 +306,33 @@ Uses a seed and **more complex finalization**.
 ## Conclusion
 
 Based on the **calculated variance**, the **JENKINS** hash function demonstrates the **lowest variance** among the provided list, indicating a **more uniform distribution** of hash values, which makes it one of the best choices for **minimizing collisions** and ensuring **efficient performance**.
+
+**BUT**, in the training framework, for simplicity, we will use **CRC32**. It's not that bad, but it's statistically slightly worse than **JENKINS**. For JENKINS or any other function, we'll have to implement **complex logic in assembly**, which we don't have enough class time for.
+
+# Optimization of hash table
+
+## Hardware
+
+- **Compiler:** `g++ 13.3.0`
+- **Processor:** `AMD Ryzen 5 4500U 2.3 GHz (4 GHz in Turbo)`
+- **OS:** `Ubuntu 24.04.2 LTS`
+- **Profiler:** `valgrind 3.22.0`
+- **To visualize profiling data:** `kcachegrind 23.08.5`
+
+## Profiling and set targets
+
+Using `valgrind` to get the program's hot spots:
+
+![without_opt](img/without_opt.png)
+
+Our optimization targets:
+
+**1. hash_CRC32**
+
+Find and implement a way to speed up hash calculation.
+
+**2. strcmp**
+
+In our case all words in the hash table are of a certain length, so we can write `strcmp` version for our case.
+
+After this steps we should check the program hot spots again.
