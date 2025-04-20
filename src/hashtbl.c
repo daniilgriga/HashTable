@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <ctype.h>
@@ -69,17 +70,28 @@ int hashT_dtor (struct HashTable_t* hashT_ptr)
     return NO_ERRORS;
 }
 
-int hashT_fill (struct HashTable_t* hashT_ptr, const char* filename)
+char** hashT_fill (struct HashTable_t* hashT_ptr, const char* filename, int* num_words)
 {
     assert (hashT_ptr);
 
     long num_symb = 0;
     char* buffer = MakeBuffer (filename, &num_symb);
+    if (buffer == NULL)
+        return NULL;
 
+    char** words_arr = (char**) calloc ((size_t) num_symb, sizeof (char*));
+    if (words_arr == NULL)
+    {
+        fprintf (stderr, "Error with filling words array\n");
+        free (buffer);
+        return NULL;
+    }
+
+    *num_words = 0;
     char* ptr = buffer;
     while (*ptr)
     {
-        while (*ptr && !isalpha(*ptr) && !isdigit(*ptr))
+        while (*ptr && !isalpha(*ptr))
         {
             *ptr = '\0';
             ptr++;
@@ -88,7 +100,7 @@ int hashT_fill (struct HashTable_t* hashT_ptr, const char* filename)
         if (!*ptr) break;
 
         char* word = ptr;
-        while (*ptr && (isalpha(*ptr) || isdigit(*ptr)))
+        while (*ptr && (isalpha(*ptr)))
             ptr++;
 
         if (*ptr)
@@ -97,20 +109,44 @@ int hashT_fill (struct HashTable_t* hashT_ptr, const char* filename)
             ptr++;
         }
 
+        char* word_cp = (char*) calloc (strlen (word) + 1, sizeof (char));
+        if (word_cp == NULL)
+        {
+            fprintf (stderr, "ERROR with copying word\n");
+            for (int i = 0; i < *num_words; i++)
+                free (words_arr[i]);
+            free (words_arr);
+            free (buffer);
+            return NULL;
+        }
+
+        strcpy (word_cp, word);
+
         uint32_t hash = 0;
-        int status = hashT_search (hashT_ptr, word, &hash);
+        int status = hashT_fill_search (hashT_ptr, word, &hash);
         if (status)
             hashT_insert (hashT_ptr, word, &hash);
 
-        // ? maybe increments some value ? //
+        words_arr[*num_words] = word_cp;
+        (*num_words)++;
     }
 
+    words_arr = realloc (words_arr, (size_t)*num_words * sizeof (char*));
+    if (words_arr == NULL)
+    {
+        fprintf (stderr, "Error reallocating words array\n");
+        for (int i = 0; i < *num_words; i++)
+            free (words_arr[i]);
+        free (words_arr);
+        free (buffer);
+        return NULL;
+    }
     free (buffer);
 
-    return 0;
+    return words_arr;
 }
 
-int hashT_search (struct HashTable_t* hashT_ptr, const char* data, uint32_t* hash)
+int hashT_fill_search (struct HashTable_t* hashT_ptr, const char* data, uint32_t* hash)
 {
     assert (hashT_ptr);
     assert (data);
@@ -238,4 +274,34 @@ void get_data_for_histo (struct HashTable_t* hashT_ptr, enum Functions name)
     }
 
     CloseFile (file);
+}
+
+int hashT_search (struct HashTable_t* hashT_ptr, const char* data)
+{
+    assert (hashT_ptr);
+    assert (data);
+
+
+    uint32_t hash = hashT_ptr->func_ptr (data);
+    hash %= (uint32_t) hashT_ptr->size;
+
+    if (hashT_ptr->buckets[hash] == NULL)
+    {
+        return 0;
+    }
+    else
+    {
+        struct Node_t* node = list_search (hashT_ptr->buckets[hash], data);
+        if (node == NULL)
+            return 0;
+        else
+            return 1;
+    }
+}
+
+void hashT_TEST (struct HashTable_t* hashT_ptr, char** words_arr, int num_words, size_t num_tests)
+{
+    for (size_t i = 0; i < num_tests; i++)
+        for (int word_i = 0; word_i < num_words; word_i++)
+            hashT_search (hashT_ptr, words_arr[word_i]);
 }

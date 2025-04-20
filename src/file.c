@@ -24,7 +24,7 @@ FILE* OpenFile (const char* filename, const char* mode)
 #define FILE_SIZE_CHECK(status)   if ( status )                                         \
                                   {                                                     \
                                       perror ("The following error occurred");          \
-                                      ERROR_MESSAGE (FILE_SIZE_ERR);                    \
+                                      ERROR_MESSAGE (FILE_SIZE_ERR)                     \
                                       return -1L;                                       \
                                   }
 
