@@ -327,11 +327,11 @@ Using `valgrind` to get the program's hot spots:
 
 Our optimization targets:
 
-**1. hash_CRC32**
+### 1. hash_CRC32
 
 Find and implement a way to speed up hash calculation.
 
-**2. strcmp**
+### 2. strcmp
 
 In our case all words in the hash table are of a certain length, so we can write `strcmp` version for our case.
 
