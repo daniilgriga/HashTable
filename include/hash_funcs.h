@@ -119,7 +119,7 @@ static inline uint32_t hash_CRC32 (const char* key)
     while (*key)
     {
         uint8_t byte = (unsigned char)*key++;
-        hash = (hash >> 8) ^ crc32_table[(hash ^ byte) & 0xFF];
+        hash = (hash << 8) ^ crc32_table[(hash >> 24) ^ byte];
     }
 
     return hash ^ 0xFFFFFFFF;
