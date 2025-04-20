@@ -33,7 +33,7 @@ int main (void)
     get_data_for_histo (hashT, FUNC_NAME);
 #endif
 
-    hashT_TEST (hashT, words_arr, num_words, 2000);
+    hashT_TEST (hashT, words_arr, num_words, 1000);
 
     for (int i = 0; i < num_words; i++)
         free(words_arr[i]);
