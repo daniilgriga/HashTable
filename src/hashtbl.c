@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <ctype.h>
+#include <immintrin.h>
 
+#include "hash_funcs.h"
 #include "hashtbl.h"
 #include "file.h"
 #include "list.h"
@@ -13,16 +15,17 @@ HashFunction select_function (enum Functions name)
 {
     switch (name)
     {
-        case LENGTH:  fprintf (stderr, "LENGTH\n");  return hash_LENGTH;
-        case ASCII:   fprintf (stderr, "ASCII\n");   return hash_ASCII;
-        case SUM_POS: fprintf (stderr, "SUM_POS\n"); return hash_SUM_POS;
-        case MULT:    fprintf (stderr, "MULT\n");    return hash_MULT;
-        case DJB2:    fprintf (stderr, "DJB2\n");    return hash_DJB2;
-        case SDBM:    fprintf (stderr, "SDBM\n");    return hash_SDBM;
-        case CRC32:   fprintf (stderr, "CRC32\n");   return hash_CRC32;
-        case FNV_1a:  fprintf (stderr, "FNV_1a\n");  return hash_FNV_1a;
-        case JENKINS: fprintf (stderr, "JENKINS\n"); return hash_JENKINS;
-        case XXHASH:  fprintf (stderr, "XXHASH\n");  return hash_XXHASH;
+        case LENGTH:       fprintf (stderr, "LENGTH\n");    return hash_LENGTH;
+        case ASCII:        fprintf (stderr, "ASCII\n");     return hash_ASCII;
+        case SUM_POS:      fprintf (stderr, "SUM_POS\n");   return hash_SUM_POS;
+        case MULT:         fprintf (stderr, "MULT\n");      return hash_MULT;
+        case DJB2:         fprintf (stderr, "DJB2\n");      return hash_DJB2;
+        case SDBM:         fprintf (stderr, "SDBM\n");      return hash_SDBM;
+        case CRC32:        fprintf (stderr, "CRC32\n");     return hash_CRC32;
+        case FNV_1a:       fprintf (stderr, "FNV_1a\n");    return hash_FNV_1a;
+        case JENKINS:      fprintf (stderr, "JENKINS\n");   return hash_JENKINS;
+        case XXHASH:       fprintf (stderr, "XXHASH\n");    return hash_XXHASH;
+        case CRC32_INLINE: fprintf (stderr, "CRC32INTR\n"); return hash_CRC32_inline;
 
         default:
             fprintf (stderr, "There is no that hash function\n");
@@ -242,16 +245,17 @@ void get_data_for_histo (struct HashTable_t* hashT_ptr, enum Functions name)
 
     switch (name)
     {
-        case LENGTH:  fprintf (file, "LENGTH\n");  break;
-        case ASCII:   fprintf (file, "ASCII\n");   break;
-        case SUM_POS: fprintf (file, "SUM_POS\n"); break;
-        case MULT:    fprintf (file, "MULT\n");    break;
-        case DJB2:    fprintf (file, "DJB2\n");    break;
-        case SDBM:    fprintf (file, "SDBM\n");    break;
-        case CRC32:   fprintf (file, "CRC32\n");   break;
-        case FNV_1a:  fprintf (file, "FNV_1a\n");  break;
-        case JENKINS: fprintf (file, "JENKINS\n"); break;
-        case XXHASH:  fprintf (file, "XXHASH\n");  break;
+        case LENGTH:       fprintf (file, "LENGTH\n");       break;
+        case ASCII:        fprintf (file, "ASCII\n");        break;
+        case SUM_POS:      fprintf (file, "SUM_POS\n");      break;
+        case MULT:         fprintf (file, "MULT\n");         break;
+        case DJB2:         fprintf (file, "DJB2\n");         break;
+        case SDBM:         fprintf (file, "SDBM\n");         break;
+        case CRC32:        fprintf (file, "CRC32\n");        break;
+        case FNV_1a:       fprintf (file, "FNV_1a\n");       break;
+        case JENKINS:      fprintf (file, "JENKINS\n");      break;
+        case XXHASH:       fprintf (file, "XXHASH\n");       break;
+        case CRC32_INLINE: fprintf (file, "CRC32_INLINE\n"); break;
 
         default:
             fprintf (file, "I dont know wtf is this function\n");
@@ -281,7 +285,6 @@ int hashT_search (struct HashTable_t* hashT_ptr, const char* data)
     assert (hashT_ptr);
     assert (data);
 
-
     uint32_t hash = hashT_ptr->func_ptr (data);
     hash %= (uint32_t) hashT_ptr->size;
 
@@ -299,9 +302,16 @@ int hashT_search (struct HashTable_t* hashT_ptr, const char* data)
     }
 }
 
-void hashT_TEST (struct HashTable_t* hashT_ptr, char** words_arr, int num_words, size_t num_tests)
+int hashT_TEST (struct HashTable_t* hashT_ptr, char** words_arr, int num_words, size_t num_tests)
 {
+    int get = 0;
+
     for (size_t i = 0; i < num_tests; i++)
         for (int word_i = 0; word_i < num_words; word_i++)
-            hashT_search (hashT_ptr, words_arr[word_i]);
+        {
+            get = hashT_search (hashT_ptr, words_arr[word_i]);
+
+        }
+
+    return get;
 }

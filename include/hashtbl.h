@@ -32,6 +32,6 @@ int get_dump (struct HashTable_t* hashT_ptr, FILE* file);
 
 void get_data_for_histo (struct HashTable_t* hashT_ptr, enum Functions name);
 
-void hashT_TEST (struct HashTable_t* hashT_ptr, char** words_arr, int num_words, size_t num_tests);
+int hashT_TEST (struct HashTable_t* hashT_ptr, char** words_arr, int num_words, size_t num_tests);
 
 #endif // HASHTBL_H
