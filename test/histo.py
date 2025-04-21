@@ -27,7 +27,7 @@ plt.title (title)
 
 plt.grid (True, alpha=0.3)
 
-plt.ylim(0, 80)
+plt.ylim (0, 80)
 
 plt.text (0.02, 0.96, f'Max collisions: {max_elements}\nVariance: {variance:.2f}',
           transform=plt.gca().transAxes,
@@ -36,6 +36,6 @@ plt.text (0.02, 0.96, f'Max collisions: {max_elements}\nVariance: {variance:.2f}
           bbox=dict (facecolor='white', alpha=0.8))
 
 filename = f'img/histo{title}.png'
-plt.savefig (filename, dpi=300, bbox_inches='tight')
+#plt.savefig (filename, dpi=300, bbox_inches='tight')
 
 plt.show()

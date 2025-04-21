@@ -1,6 +1,6 @@
 CC = gcc
 
-FLAGS = -O3 -g -D _DEBUG -ggdb3 -Wall -Wextra  -Waggressive-loop-optimizations           		      \
+FLAGS = -O3 -g -msse4.2 -mavx2 -DNDEBUG -ggdb3 -Wall -Wextra  -Waggressive-loop-optimizations         \
 	   	-Wmissing-declarations -Wcast-align -Wcast-qual -Wchar-subscripts             				  \
 		-Wconversion -Wempty-body -Wfloat-equal										  				  \
 		-Wformat-nonliteral -Wformat-security -Wformat-signedness -Wformat=2 -Winline 				  \
