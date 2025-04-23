@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <immintrin.h>
 
 #include "list.h"
 #include "tools.h"
@@ -64,4 +65,39 @@ struct Node_t* list_search (struct Node_t* node, const char* data)
     }
 
     return NULL;
+}
+
+int boost_strcmp (const char *str_1, const char *str_2)
+{
+    __m128i s1 = _mm_loadu_si128 ((const __m128i*)str_1);
+    __m128i s2 = _mm_loadu_si128 ((const __m128i*)str_2);
+
+    __m128i eq = _mm_cmpeq_epi8 (s1, s2);
+
+    __m128i zero  = _mm_setzero_si128();
+    __m128i term1 = _mm_cmpeq_epi8 (s1, zero);
+
+    int mask_eq = _mm_movemask_epi8 (eq);
+    int mask_term1 = _mm_movemask_epi8 (term1);
+
+    if (mask_eq != 0xFFFF)
+    {
+        int pos = __builtin_ctz (~mask_eq);                     // `~` = complement of the original number
+        if (mask_term1 & (1 << pos))
+            return 0;
+
+        return (unsigned char)str_1[pos] - (unsigned char)str_2[pos];
+    }
+
+    if (mask_term1)
+        return 0;
+
+    str_1 += 16;
+    str_2 += 16;
+    while (*str_1 && *str_1 == *str_2)
+    {
+        str_1++;
+        str_2++;
+    }
+    return (unsigned char)*str_1 - (unsigned char)*str_2;
 }

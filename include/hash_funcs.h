@@ -136,7 +136,7 @@ static inline uint32_t hash_CRC32_inline (const char* key)
     while (*key)
     {
         uint8_t byte = (uint8_t)(*key++);
-        __asm__ ("crc32b %1, %0" : "+r"(hash) : "r"(byte));
+        __asm__ volatile ("crc32b %1, %0" : "+r"(hash) : "r"(byte));
     }
     return hash ^ 0xFFFFFFFF;
 }

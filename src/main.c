@@ -32,11 +32,11 @@ int main (void)
 
 #if 0
     get_dump (hashT, stdout);
-#endif
     get_data_for_histo (hashT, FUNC_NAME);
+#endif
 
     fprintf (stderr, "Test is starting\n");
-    hashT_TEST (hashT, words_arr, num_words, 100);
+    hashT_TEST (hashT, words_arr, num_words, 15);
     fprintf (stderr, "Test is over\n");
 
     for (int i = 0; i < num_words; i++)

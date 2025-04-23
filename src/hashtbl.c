@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <ctype.h>
-#include <immintrin.h>
 
 #include "hash_funcs.h"
 #include "hashtbl.h"
@@ -15,17 +14,17 @@ HashFunction select_function (enum Functions name)
 {
     switch (name)
     {
-        case LENGTH:       fprintf (stderr, "LENGTH\n");    return hash_LENGTH;
-        case ASCII:        fprintf (stderr, "ASCII\n");     return hash_ASCII;
-        case SUM_POS:      fprintf (stderr, "SUM_POS\n");   return hash_SUM_POS;
-        case MULT:         fprintf (stderr, "MULT\n");      return hash_MULT;
-        case DJB2:         fprintf (stderr, "DJB2\n");      return hash_DJB2;
-        case SDBM:         fprintf (stderr, "SDBM\n");      return hash_SDBM;
-        case CRC32:        fprintf (stderr, "CRC32\n");     return hash_CRC32;
-        case FNV_1a:       fprintf (stderr, "FNV_1a\n");    return hash_FNV_1a;
-        case JENKINS:      fprintf (stderr, "JENKINS\n");   return hash_JENKINS;
-        case XXHASH:       fprintf (stderr, "XXHASH\n");    return hash_XXHASH;
-        case CRC32_INLINE: fprintf (stderr, "CRC32INTR\n"); return hash_CRC32_inline;
+        case LENGTH:       fprintf (stderr, "LENGTH\n");      return hash_LENGTH;
+        case ASCII:        fprintf (stderr, "ASCII\n");       return hash_ASCII;
+        case SUM_POS:      fprintf (stderr, "SUM_POS\n");     return hash_SUM_POS;
+        case MULT:         fprintf (stderr, "MULT\n");        return hash_MULT;
+        case DJB2:         fprintf (stderr, "DJB2\n");        return hash_DJB2;
+        case SDBM:         fprintf (stderr, "SDBM\n");        return hash_SDBM;
+        case CRC32:        fprintf (stderr, "CRC32\n");       return hash_CRC32;
+        case FNV_1a:       fprintf (stderr, "FNV_1a\n");      return hash_FNV_1a;
+        case JENKINS:      fprintf (stderr, "JENKINS\n");     return hash_JENKINS;
+        case XXHASH:       fprintf (stderr, "XXHASH\n");      return hash_XXHASH;
+        case CRC32_INLINE: fprintf (stderr, "CRC32INLINE\n"); return hash_CRC32_inline;
 
         default:
             fprintf (stderr, "There is no that hash function\n");
@@ -308,10 +307,7 @@ int hashT_TEST (struct HashTable_t* hashT_ptr, char** words_arr, int num_words, 
 
     for (size_t i = 0; i < num_tests; i++)
         for (int word_i = 0; word_i < num_words; word_i++)
-        {
             get = hashT_search (hashT_ptr, words_arr[word_i]);
-
-        }
 
     return get;
 }
