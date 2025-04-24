@@ -59,6 +59,9 @@ static inline uint32_t hash_LENGTH (const char* key)
 
 ![length](img/histoLENGTH.png)
 
+> [!NOTE]
+> Histogram is scaled down on the **x-axis** for better visibility.
+
 Terrible hash function, **no comments**.
 
 ## ASCII
