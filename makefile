@@ -29,7 +29,7 @@ EXECUTABLE = build/test
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
-	@$(CC) $(LDFLAGS) $^ -o $@
+	@$(CC) $(LDFLAGS) $^ build/crc32.o -o $@
 
 -include $(DEPS)
 
@@ -42,3 +42,6 @@ clean:
 callgrind:
 	valgrind --dump-instr=yes --collect-jumps=yes --tool=callgrind --callgrind-out-file=test/callgrind/callgrind.out.$(prog) ./build/test
 	kcachegrind test/callgrind/callgrind.out.$(prog)
+
+nasm:
+	nasm -f elf64 src/crc32.nasm -o build/crc32.o

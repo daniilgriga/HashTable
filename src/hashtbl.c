@@ -4,8 +4,9 @@
 #include <assert.h>
 #include <ctype.h>
 
-#include "hash_funcs.h"
 #include "hashtbl.h"
+#include "hash_funcs.h"
+#include "crc32_nasm.h"
 #include "file.h"
 #include "list.h"
 #include "tools.h"
@@ -25,6 +26,7 @@ HashFunction select_function (enum Functions name)
         case JENKINS:      fprintf (stderr, "JENKINS\n");     return hash_JENKINS;
         case XXHASH:       fprintf (stderr, "XXHASH\n");      return hash_XXHASH;
         case CRC32_INLINE: fprintf (stderr, "CRC32INLINE\n"); return hash_CRC32_inline;
+        case CRC32_NASM:   fprintf (stderr, "CRC32NASM\n");   return hash_crc32;
 
         default:
             fprintf (stderr, "There is no that hash function\n");
@@ -255,6 +257,7 @@ void get_data_for_histo (struct HashTable_t* hashT_ptr, enum Functions name)
         case JENKINS:      fprintf (file, "JENKINS\n");      break;
         case XXHASH:       fprintf (file, "XXHASH\n");       break;
         case CRC32_INLINE: fprintf (file, "CRC32_INLINE\n"); break;
+        case CRC32_NASM:   fprintf (file, "CRC32NASM\n");    break;
 
         default:
             fprintf (file, "I dont know wtf is this function\n");

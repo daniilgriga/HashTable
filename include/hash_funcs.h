@@ -16,7 +16,8 @@ enum Functions
     FNV_1a,
     JENKINS,
     XXHASH,
-    CRC32_INLINE
+    CRC32_INLINE,
+    CRC32_NASM
 };
 
 static const uint32_t crc32_table[256] = {

@@ -19,6 +19,7 @@ hash_crc32:
     movzx edx, byte [rdi + rcx]
     test dl, dl
     jz .end
+
     crc32 eax, dl
     inc rcx
     jmp .lesgo

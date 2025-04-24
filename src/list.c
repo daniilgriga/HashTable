@@ -58,7 +58,7 @@ struct Node_t* list_search (struct Node_t* node, const char* data)
 
     while (node)
     {
-        if (strcmp (node->data, data) == 0)
+        if (boost_strcmp (node->data, data) == 0)
             return node;
 
         node = node->next;
@@ -69,32 +69,32 @@ struct Node_t* list_search (struct Node_t* node, const char* data)
 
 int boost_strcmp (const char *str_1, const char *str_2)
 {
-    __m128i s1 = _mm_loadu_si128 ((const __m128i*)str_1);
+    __m128i s1 = _mm_loadu_si128 ((const __m128i*)str_1);   // load 16 bytes into SIMD registers
     __m128i s2 = _mm_loadu_si128 ((const __m128i*)str_2);
 
-    __m128i eq = _mm_cmpeq_epi8 (s1, s2);
+    __m128i eq = _mm_cmpeq_epi8 (s1, s2);                   // compare bytes
 
-    __m128i zero  = _mm_setzero_si128();
-    __m128i term1 = _mm_cmpeq_epi8 (s1, zero);
+    __m128i zero  = _mm_setzero_si128();                    // zero vector
+    __m128i term1 = _mm_cmpeq_epi8 (s1, zero);              // compare bytes
 
-    int mask_eq = _mm_movemask_epi8 (eq);
-    int mask_term1 = _mm_movemask_epi8 (term1);
+    int mask_eq    = _mm_movemask_epi8 (eq);                // creates bit masks (1 - equal; 0 - differ)
+    int mask_term1 = _mm_movemask_epi8 (term1);             //                   (1 - where '\0'
 
-    if (mask_eq != 0xFFFF)
+    if (mask_eq != 0xFFFF)                                  // if not all bytes are equal
     {
-        int pos = __builtin_ctz (~mask_eq);                     // `~` = complement of the original number
-        if (mask_term1 & (1 << pos))
+        int pos = __builtin_ctz (~mask_eq);                 // find first differing byte | `~` = complement of the original number
+        if (mask_term1 & (1 << pos))                        // if diff position in '\0' -> strings are equal
             return 0;
 
         return (unsigned char)str_1[pos] - (unsigned char)str_2[pos];
     }
 
-    if (mask_term1)
+    if (mask_term1)                                         // if there is in first 16 bytes '\0' -> equal
         return 0;
 
     str_1 += 16;
     str_2 += 16;
-    while (*str_1 && *str_1 == *str_2)
+    while (*str_1 && *str_1 == *str_2)                      // compare remaining bytes one by one
     {
         str_1++;
         str_2++;
