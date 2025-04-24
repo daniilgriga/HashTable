@@ -27,7 +27,9 @@ Lab work on programming in the [ded32](https://github.com/ded32) course on optim
 - [Optimization of hash table](#optimization-of-hash-table)
     - [Hardware](#hardware)
     - [Profiling and set targets](#profiling-and-set-targets)
-
+    - [Hash function optimization](#hash-function-optimization)
+    - [strcmp optimization](#strcmp-optimization)
+    - [Hash function optimization. Part 2](#hash-function-optimization-part-2)
 # Research of hash functions
 
 1. To investigate hash functions, I load `Leo Tolstoy's text “War and Peace”` into a hash table.
@@ -187,7 +189,7 @@ Employs more complex bit shifts and subtraction, which can enhance **the avalanc
 
 ## CRC32
 
-Hash = using a lookup table and computing a cyclic redundancy check by XOR'ing the hash with each character and shifting the result.
+Hash = using a lookup table and computing a cyclic redundancy check by XOR'ing the hash with each character and shifting the result (poly = `0x1EDC6F41`).
 
 <details>
 <summary>Click to expand/collapse</summary>
@@ -331,8 +333,138 @@ Our optimization targets:
 
 Find and implement a way to speed up hash calculation.
 
-### 2. strcmp
+### 2. `strcmp`
 
 In our case all words in the hash table are of a certain length, so we can write `strcmp` version for our case.
 
 After this steps we should check the program hot spots again.
+
+## Hash function optimization
+
+I have implemented a CRC32 hash function in `NASM assembly` language using `SSE4.2` processor instructions. The implementation targets the `x86-64` architecture in `Linux`, adhering to `ABI System V`. The function computes the CRC32 byte by byte.
+
+``` nasm
+section .text
+global hash_crc32
+
+hash_crc32:
+    mov eax, 0xFFFFFFFF
+    xor rcx, rcx
+
+.lesgo:
+    movzx edx, byte [rdi + rcx]
+    test dl, dl
+    jz .end
+
+    crc32 eax, dl
+    inc rcx
+    jmp .lesgo
+
+.end:
+    xor eax, 0xFFFFFFFF
+    ret
+```
+
+Re-profiling result:
+
+![optimization1](img/optimization1.png)
+
+The highlighted function is our `CRC32` in `NASM`.
+The program has become *`1.7`* times faster, i.e. gain = *`70%`*.
+
+## `strcmp` optimization
+
+From the analysis of hash functions (the LENGTH function), we know that Leo Tolstoy's text contains words of this length:
+
+| Length | Number of words |
+|--------|-----------------|
+|   18   |        1        |
+|   17   |        8        |
+|   16   |       21        |
+|   15   |       53        |
+|  ...   |       ...       |
+|    2   |       316       |
+|    1   |       58        |
+
+Based on these statistics, we can conclude that the comparison function can be rewritten for our particular case:
+
+1. For strings shorter than 16 bytes, the function uses `SSE` to compare 16 bytes simultaneously, speeding up the process considerably.
+
+2. For strings longer than 16 bytes, the remaining characters are processed byte-by-byte to ensure correct comparison.
+
+<details>
+<summary>Click to expand/collapse <strong>new strcmp</strong></summary>
+
+```C
+int boost_strcmp (const char *str_1, const char *str_2)
+{
+    __m128i s1 = _mm_loadu_si128 ((const __m128i*)str_1);   // load 16 bytes into SIMD registers
+    __m128i s2 = _mm_loadu_si128 ((const __m128i*)str_2);
+
+    __m128i eq = _mm_cmpeq_epi8 (s1, s2);                   // compare bytes
+
+    __m128i zero  = _mm_setzero_si128();                    // zero vector
+    __m128i term1 = _mm_cmpeq_epi8 (s1, zero);              // compare bytes
+
+    int mask_eq    = _mm_movemask_epi8 (eq);                // creates bit masks (1 - equal; 0 - differ)
+    int mask_term1 = _mm_movemask_epi8 (term1);             //                   (1 - where '\0'
+
+    if (mask_eq != 0xFFFF)                                  // if not all bytes are equal
+    {
+        int pos = __builtin_ctz (~mask_eq);                 // find first differing byte | `~` = complement of the original number
+        if (mask_term1 & (1 << pos))                        // if diff position in '\0' -> strings are equal
+            return 0;
+
+        return (unsigned char)str_1[pos] - (unsigned char)str_2[pos];
+    }
+
+    if (mask_term1)                                         // if there is in first 16 bytes '\0' -> equal
+        return 0;
+
+    str_1 += 16;
+    str_2 += 16;
+    while (*str_1 && *str_1 == *str_2)                      // compare remaining bytes one by one
+    {
+        str_1++;
+        str_2++;
+    }
+    return (unsigned char)*str_1 - (unsigned char)*str_2;
+}
+```
+</details>
+
+Re-profiling result:
+
+![optimization2](img/optimization2.png)
+
+The compiler inlined `boost_strcmp`, so let's see how many instructions the main has changed by.
+
+The program has become *`4`* times faster than the previous version of the program, i.e. gain = *`400%`*.
+
+Also, we notice that the hash counting function remains the hottest one.
+
+## Hash function optimization. Part 2
+
+For educational purposes, I needed to familiarize myself with **inline assembler**, so I used it to write another version of CRC32:
+
+```C
+static inline uint32_t hash_CRC32_inline (const char* key)
+{
+    uint32_t hash = 0xFFFFFFFF;
+
+    while (*key)
+    {
+        uint8_t byte = (uint8_t)(*key++);
+        __asm__ volatile ("crc32b %1, %0" : "+r"(hash) : "r"(byte));
+    }
+    return hash ^ 0xFFFFFFFF;
+}
+```
+
+Re-profiling result:
+
+![optimization3](img/optimization3.png)
+
+The program has become *`1.2`* times faster than the previous version of the program, i.e. gain = *`20%`*.
+
+

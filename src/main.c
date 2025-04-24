@@ -8,7 +8,7 @@
 const char* filename = "test/War_and_Peace.txt";
 const int HT_SIZE = 20000;
 
-#define FUNC_NAME CRC32_NASM
+#define FUNC_NAME CRC32_INLINE
 // LENGTH
 // ASCII
 // SUM_POS
@@ -37,7 +37,7 @@ int main (void)
 #endif
 
     fprintf (stderr, "Test is starting\n");
-    hashT_TEST (hashT, words_arr, num_words, 100);
+    hashT_TEST (hashT, words_arr, num_words, 1000);
     fprintf (stderr, "Test is over\n");
 
     for (int i = 0; i < num_words; i++)
