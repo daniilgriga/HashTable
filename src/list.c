@@ -78,7 +78,7 @@ int boost_strcmp (const char *str_1, const char *str_2)
     __m128i term1 = _mm_cmpeq_epi8 (s1, zero);              // compare bytes
 
     int mask_eq    = _mm_movemask_epi8 (eq);                // creates bit masks (1 - equal; 0 - differ)
-    int mask_term1 = _mm_movemask_epi8 (term1);             //                   (1 - where '\0'
+    int mask_term1 = _mm_movemask_epi8 (term1);             //                   (1 - where '\0')
 
     if (mask_eq != 0xFFFF)                                  // if not all bytes are equal
     {

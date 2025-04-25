@@ -1,3 +1,5 @@
+//#define RESEARCH
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -10,6 +12,8 @@
 #include "file.h"
 #include "list.h"
 #include "tools.h"
+
+#define HASH_CRC32_ hash_CRC32 (data);
 
 HashFunction select_function (enum Functions name)
 {
@@ -155,7 +159,12 @@ int hashT_fill_search (struct HashTable_t* hashT_ptr, const char* data, uint32_t
     assert (hashT_ptr);
     assert (data);
 
+#ifdef RESEARCH
     *hash = hashT_ptr->func_ptr (data);
+#else
+    *hash = HASH_CRC32_
+#endif
+
     *hash %= (uint32_t) hashT_ptr->size;
 
     struct Node_t* node = hashT_ptr->buckets[*hash];
@@ -287,7 +296,12 @@ int hashT_search (struct HashTable_t* hashT_ptr, const char* data)
     assert (hashT_ptr);
     assert (data);
 
+#ifdef RESEARCH
     uint32_t hash = hashT_ptr->func_ptr (data);
+#else
+    uint32_t hash = HASH_CRC32_
+#endif
+
     hash %= (uint32_t) hashT_ptr->size;
 
     if (hashT_ptr->buckets[hash] == NULL)
