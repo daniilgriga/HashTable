@@ -49,7 +49,7 @@ long FileSize (FILE* file_ptr)
 
 char* ReadInBuffer (FILE* file_ptr, const long num_symb)
 {
-    char* buffer = (char*) calloc ( (size_t) num_symb + 1, sizeof (char) );               // EOF -> +1
+    char* buffer = (char*) calloc ( (size_t) num_symb + 1 + 16, sizeof (char) ); // EOF -> +1 | specially for HT + 16 for intrinsics in boost_strcmp
     if (buffer == NULL)
         return NULL;
 

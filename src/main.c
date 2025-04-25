@@ -37,8 +37,9 @@ int main (void)
 #endif
 
     fprintf (stderr, "Test is starting\n");
-    hashT_TEST (hashT, words_arr, num_words, 1000);
+    int get_n = hashT_TEST (hashT, words_arr, num_words, 1000);
     fprintf (stderr, "Test is over\n");
+    fprintf (stderr, "Number from hashT_TEST = <%d>\n", get_n);
 
     for (int i = 0; i < num_words; i++)
         free(words_arr[i]);

@@ -310,7 +310,7 @@ int hashT_TEST (struct HashTable_t* hashT_ptr, char** words_arr, int num_words, 
 
     for (size_t i = 0; i < num_tests; i++)
         for (int word_i = 0; word_i < num_words; word_i++)
-            get = hashT_search (hashT_ptr, words_arr[word_i]);
+            get += hashT_search (hashT_ptr, words_arr[word_i]);
 
     return get;
 }
