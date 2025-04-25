@@ -396,7 +396,7 @@ Based on these statistics, we can conclude that the comparison function can be r
 2. For strings longer than 16 bytes, the remaining characters are processed byte-by-byte to ensure correct comparison.
 
 <details>
-<summary>Click to expand/collapse <strong>new strcmp</strong></summary>
+<summary><strong>Click to expand/collapse new strcmp</strong></summary>
 
 ```C
 int boost_strcmp (const char *str_1, const char *str_2)
