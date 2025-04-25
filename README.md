@@ -435,23 +435,22 @@ int boost_strcmp (const char *str_1, const char *str_2)
 }
 ```
 
-> [!TIP]
-> It might be interesting to look at the implementation of `__builtin_ctz`, it uses the `bsf` (Bit Scan Forward) instruction:
->
-> ```nasm
-> section .text
-> global __builtin_ctz
->
-> __builtin_ctz:
->     test edi, edi
->     jz .zero
->     bsf eax, edi
->     ret
->
-> .zero:
->     mov eax, 32
->     ret
-> ```
+It might be interesting to look at the implementation of `__builtin_ctz`, it uses the `bsf` (Bit Scan Forward) instruction:
+
+```nasm
+section .text
+global __builtin_ctz
+
+__builtin_ctz:
+    test edi, edi
+    jz .zero
+    bsf eax, edi
+    ret
+
+.zero:
+    mov eax, 32
+    ret
+```
 
 </details>
 
