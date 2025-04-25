@@ -26,7 +26,7 @@ Lab work on programming in the [ded32](https://github.com/ded32) course on optim
     - [Conclusion](#conclusion)
 - [Optimization of hash table](#optimization-of-hash-table)
     - [Hardware](#hardware)
-    - [Profiling and set targets](#profiling-and-set-targets)
+    - [Profiling and setting targets](#profiling-and-setting-targets)
     - [Hash function optimization](#hash-function-optimization)
     - [strcmp optimization](#strcmp-optimization)
     - [Hash function optimization. Part 2](#hash-function-optimization-part-2)
@@ -34,7 +34,7 @@ Lab work on programming in the [ded32](https://github.com/ded32) course on optim
 
 1. To investigate hash functions, I load `Leo Tolstoy's text “War and Peace”` into a hash table.
 
-2. I load the number of bucket (`2000`) and the number of elements in it in `data.txt`.
+2. I load the number of buckets (`2000`) and the number of elements in it in `data.txt`.
 
 3. I use `histo.py` to build histograms using the data from `data.txt`.
 
@@ -188,7 +188,7 @@ static inline uint32_t hash_SDBM (const char* key)
 Employs more complex bit shifts and subtraction, which can enhance **the avalanche effect** but may be slower due to additional operations.
 
 > [!NOTE]
-> **Avalanche Effect**: A property of a hash function where a small change in the input *(e.g., flipping a single bit)* causes a significant and unpredictable change in the output hash, ideally altering approximately 50% of the bits in a random manner, ensuring better distribution and collision resistance.
+> **Avalanche Effect**: A property of a hash function where a small change in the input *(e.g., flipping a single bit)* causes a significant and unpredictable change in the output hash.
 
 ## CRC32
 
@@ -324,7 +324,7 @@ Based on the **calculated variance**, the **JENKINS** hash function demonstrates
 - **Profiler:** `valgrind 3.22.0`
 - **To visualize profiling data:** `kcachegrind 23.08.5`
 
-## Profiling and set targets
+## Profiling and setting targets
 
 Using `valgrind` to get the program's hot spots:
 
