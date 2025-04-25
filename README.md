@@ -218,7 +218,7 @@ static inline uint32_t hash_CRC32 (const char* key)
 
 ## FNV_1a
 
-Hash = XORs the hash with each character and multiplies the result by a prime number (16777619) in each iteration.
+Hash = XORs the hash with each character and multiplies the result by a prime number (`16777619`) in each iteration.
 
 <details>
 <summary>Click to expand/collapse</summary>
@@ -244,7 +244,7 @@ Avoids table lookups, making it **faster** while maintaining good distribution t
 
 ## JENKINS
 
-Hash = adds each character to the hash, shifts it left by 10, XORs with a right shift by 6, and finalizes with additional shifts and XORs.
+Hash = adds each character to the hash, shifts it left by `10`, XORs with a right shift by `6`, and finalizes with additional shifts and XORs.
 
 <details>
 <summary>Click to expand/collapse</summary>
@@ -275,7 +275,7 @@ Incorporates **more aggressive** bit mixing with shifts and XORs, improving the 
 
 ## XXHASH
 
-Hash = multiplies each character by a seed, applies a rotation (left shift by 17), multiplies by a constant, and finalizes with a series of XORs and multiplications.
+Hash = multiplies each character by a seed, applies a rotation (left shift by `17`), multiplies by a constant, and finalizes with a series of `XORs` and multiplications.
 
 <details>
 <summary>Click to expand/collapse</summary>
@@ -434,6 +434,25 @@ int boost_strcmp (const char *str_1, const char *str_2)
     return (unsigned char)*str_1 - (unsigned char)*str_2;
 }
 ```
+
+> [!TIP]
+> It might be interesting to look at the implementation of `__builtin_ctz`, it uses the `bsf` (Bit Scan Forward) instruction:
+>
+> ```nasm
+> section .text
+> global __builtin_ctz
+>
+> __builtin_ctz:
+>     test edi, edi
+>     jz .zero
+>     bsf eax, edi
+>     ret
+>
+> .zero:
+>     mov eax, 32
+>     ret
+> ```
+
 </details>
 
 Re-profiling result:
