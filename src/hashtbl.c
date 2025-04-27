@@ -13,7 +13,7 @@
 #include "list.h"
 #include "tools.h"
 
-#define HASH_CRC32_ hash_CRC32 (data);
+#define HASH_CRC32_(text) hash_CRC32_inline (text);
 
 HashFunction select_function (enum Functions name)
 {
@@ -30,7 +30,7 @@ HashFunction select_function (enum Functions name)
         case JENKINS:      fprintf (stderr, "JENKINS\n");     return hash_JENKINS;
         case XXHASH:       fprintf (stderr, "XXHASH\n");      return hash_XXHASH;
         case CRC32_INLINE: fprintf (stderr, "CRC32INLINE\n"); return hash_CRC32_inline;
-        case CRC32_NASM:   fprintf (stderr, "CRC32NASM\n");   return hash_crc32;
+        case CRC32_NASM:   fprintf (stderr, "CRC32NASM\n");   return hash_crc32_nasm;
 
         default:
             fprintf (stderr, "There is no that hash function\n");
@@ -162,7 +162,7 @@ int hashT_fill_search (struct HashTable_t* hashT_ptr, const char* data, uint32_t
 #ifdef RESEARCH
     *hash = hashT_ptr->func_ptr (data);
 #else
-    *hash = HASH_CRC32_
+    *hash = HASH_CRC32_(data)
 #endif
 
     *hash %= (uint32_t) hashT_ptr->size;
@@ -299,7 +299,7 @@ int hashT_search (struct HashTable_t* hashT_ptr, const char* data)
 #ifdef RESEARCH
     uint32_t hash = hashT_ptr->func_ptr (data);
 #else
-    uint32_t hash = HASH_CRC32_
+    uint32_t hash = HASH_CRC32_(data)
 #endif
 
     hash %= (uint32_t) hashT_ptr->size;
