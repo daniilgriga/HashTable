@@ -373,7 +373,7 @@ Re-profiling result:
 ![optimization1](img/optimization1.png)
 
 The highlighted function is our `CRC32` in `NASM`.
-The program has become *`1.7`* times faster, i.e. gain = *`70%`*.
+The program has become *`1.2`* times faster, i.e. gain = *`20%`*.
 
 ## `strcmp` optimization
 
@@ -460,7 +460,7 @@ Re-profiling result:
 
 The compiler inlined `boost_strcmp`, so let's see how many instructions the main has changed by.
 
-The program has become *`4`* times faster than the previous version of the program, i.e. gain = *`400%`*.
+The program has become *`1.3`* times faster than the previous version of the program, i.e. gain = *`30%`*.
 
 Also, we notice that the hash counting function remains the hottest one.
 
@@ -486,6 +486,6 @@ Re-profiling result:
 
 ![optimization3](img/optimization3.png)
 
-The program has become *`1.2`* times faster than the previous version of the program, i.e. gain = *`20%`*.
+The program has become *`1.1`* times faster than the previous version of the program, i.e. gain = *`10%`*.
 
 
