@@ -10,6 +10,16 @@
 
 Lab work on programming in the [ded32](https://github.com/ded32) course on optimizing search in a hash table.
 
+A **Hash Table** is a data structure that maps keys to values for efficient lookups, insertions, and deletions.
+
+It uses a hash function to compute an index into an array where the value is stored. **Collisions** (when different keys map to the same index) are resolved using techniques like separate chaining (linked lists).
+
+Hash tables offer average-case time **complexity of O(1)** for operations, making them ideal for applications requiring fast access, such as caches, dictionaries, and databases.
+
+**Load Factor** is the ratio of the number of elements in a hash table to its total number of slots (array size).
+
+Typically, a **load factor of `0.7` (`70%`) is ideal—balancing memory usage and performance**.
+
 # Context
 
 - [Research of hash functions](#research-of-hash-functions)
@@ -31,18 +41,21 @@ Lab work on programming in the [ded32](https://github.com/ded32) course on optim
     - [strcmp optimization](#strcmp-optimization)
     - [Hash function optimization. Part 2](#hash-function-optimization-part-2)
     - [Summary](#summary)
-- [Comparison between `callgrind` and `perf`](#comparison-between-callgrind-and-perf)
+- [Comparison between `callgrind` and `perf`](#comparison-between-valgrind-and-perf)
     - [First optimization (hash func)](#1-first-optimization-hash-func)
     - [Second optimization (strcmp)](#2-second-optimization-strcmp)
     - [Third optimization (hash func again)](#3-third-optimization-hash-func-again)
     - [Summary](#summary-1)
     - [Comparison table](#comparison-table)
+- [Conclusions](#conclusions)
 
 # Research of hash functions
 
 1. To investigate hash functions, I load `Leo Tolstoy's text “War and Peace”` into a hash table.
 
 2. I load the number of buckets (`2000`) and the number of elements in it in `data.txt`.
+
+3. **Load factor** is `10.9`. (For training purposes, so that assembly optimizations are more **visible**)
 
 3. I use `histo.py` to build histograms using the data from `data.txt`.
 
@@ -626,7 +639,7 @@ The program has become *`1.09`* times faster than the previous version of the pr
 ## Comparison table
 
 > [!NOTE]
-> It is also worth considering in the comparison that `perf` uses hardware counters to measure CPU cycles, including kernel activity. `valgrind (callgrind)`, on the other hand, emulates execution to count instructions executed (IR), offering detailed code-level analysis, but with significant slowdown and limited kernel visibility.
+> It is also worth considering in the comparison that `perf` uses **hardware counters** to measure CPU cycles, including kernel activity. `valgrind (callgrind)`, on the other hand, **emulates execution to count instructions executed (IR)**, offering detailed code-level analysis, but with significant slowdown and limited kernel visibility.
 
 <table>
     <thead>
@@ -642,7 +655,7 @@ The program has become *`1.09`* times faster than the previous version of the pr
             <th style="text-align: center">perf</th>
         </tr>
         <tr>
-            <th colspan=4 style="text-align: center">Ir * 10^10</th>
+            <th colspan=4 style="text-align: center">Instructions * 10^10</th>
         </tr>
     </thead>
     <tbody>
@@ -676,3 +689,18 @@ The program has become *`1.09`* times faster than the previous version of the pr
         </tr>
     </tbody>
 </table>
+
+# Conclusions
+
+I conducted a performance analysis of hash functions and implemented the following optimizations for a hash table, using Callgrind and Perf for profiling:
+ - **Analysis of Hash Functions:** Evaluated different hash functions to identify bottlenecks in the hash table.
+
+ - **Optimization 1:** Replaced the `CRC32 hash function` with a custom NASM implementation for faster computation.
+
+ - **Optimization 2:** Wrote a custom `strcmp` using intrinsics to improve string comparison performance.
+
+ - **Optimization 3:** Utilized inline assembly for the `CRC32 hash function` to further enhance speed.
+
+ - **Profiling Tools:** Used Callgrind for detailed instruction-level analysis and Perf for hardware-based metrics (instructions, cycles) to measure improvements.
+
+ - **Final program acceleration:** program performance increased by over **`68%`**
