@@ -30,7 +30,13 @@ Lab work on programming in the [ded32](https://github.com/ded32) course on optim
     - [Hash function optimization](#hash-function-optimization)
     - [strcmp optimization](#strcmp-optimization)
     - [Hash function optimization. Part 2](#hash-function-optimization-part-2)
+    - [Summary](#summary)
 - [Comparison between `callgrind` and `perf`](#comparison-between-callgrind-and-perf)
+    - [First optimization (hash func)](#1-first-optimization-hash-func)
+    - [Second optimization (strcmp)](#2-second-optimization-strcmp)
+    - [Third optimization (hash func again)](#3-third-optimization-hash-func-again)
+    - [Summary](#summary-1)
+    - [Comparison table](#comparison-table)
 
 # Research of hash functions
 
@@ -375,7 +381,7 @@ Re-profiling result:
 ![optimization1](img/optimization1.png)
 
 The highlighted function is our `CRC32` in `NASM`.
-The program has become *`1.2`* times faster, i.e. gain = *`20%`*.
+The program has become *`1.21`* times faster, i.e. gain = *`21%`*.
 
 ## `strcmp` optimization
 
@@ -462,7 +468,7 @@ Re-profiling result:
 
 The compiler inlined `boost_strcmp`, so let's see how many instructions the main has changed by.
 
-The program has become *`1.3`* times faster than the previous version of the program, i.e. gain = *`30%`*.
+The program has become *`1.26`* times faster than the previous version of the program, i.e. gain = *`26%`*.
 
 Also, we notice that the hash counting function remains the hottest one.
 
@@ -488,7 +494,7 @@ Re-profiling result:
 
 ![optimization3](img/optimization3.png)
 
-The program has become *`1.1`* times faster than the previous version of the program, i.e. gain = *`10%`*.
+The program has become *`1.09`* times faster than the previous version of the program, i.e. gain = *`9%`*.
 
 ## Summary
 
@@ -508,28 +514,28 @@ The program has become *`1.1`* times faster than the previous version of the pro
     </thead>
     <tbody>
         <tr>
-            <td>base</td>
+            <td><b>base</b></td>
             <td style="text-align: center">59&nbsp;597&nbsp;711</td>
             <td style="text-align: center">-</td>
             <td style="text-align: center">59&nbsp;242&nbsp;545</td>
             <td style="text-align: center">-</td>
         <tr>
         </tr>
-            <td>hash func (1)</td>
+            <td><b>hash func (1)</b></td>
             <td style="text-align: center">49&nbsp;143&nbsp;033</td>
             <td style="text-align: center">21</td>
             <td style="text-align: center">48&nbsp;799&nbsp;820</td>
             <td style="text-align: center">21</td>
         <tr>
         </tr>
-            <td>strcmp</td>
+            <td><b>strcmp</b></td>
             <td style="text-align: center">38&nbsp;919&nbsp;835 </td>
             <td style="text-align: center">26</td>
             <td style="text-align: center">38&nbsp;591&nbsp;184</td>
             <td style="text-align: center">26</td>
         <tr>
         </tr>
-            <td>hash func (2)</td>
+            <td><b>hash func (2)</b></td>
             <td style="text-align: center">35&nbsp;579&nbsp;390</td>
             <td style="text-align: center">9</td>
             <td style="text-align: center">35&nbsp;255&nbsp;451</td>
@@ -555,19 +561,19 @@ Let's go through our optimizations again and analyze the profiles:
 
 ![perf_1](img/perf_opt1.png)
 
-The program has become *`1.2`* times faster than the previous version of the program, i.e. gain = *`20%`*.
+The program has become *`1.21`* times faster than the previous version of the program, i.e. gain = *`21%`*.
 
 ## 2. Second optimization (strcmp)
 
 ![perf_2](img/perf_opt2.png)
 
-The program has become *`1.2`* times faster than the previous version of the program, i.e. gain = *`20%`*.
+The program has become *`1.23`* times faster than the previous version of the program, i.e. gain = *`23%`*.
 
-## 3. First optimization (hash func again)
+## 3. Third optimization (hash func again)
 
 ![perf_3](img/perf_opt3.png)
 
-The program has become *`1.1`* times faster than the previous version of the program, i.e. gain = *`10%`*.
+The program has become *`1.09`* times faster than the previous version of the program, i.e. gain = *`9%`*.
 
 ## Summary
 
@@ -587,28 +593,28 @@ The program has become *`1.1`* times faster than the previous version of the pro
     </thead>
     <tbody>
         <tr>
-            <td>base</td>
+            <td><b>base</b></td>
             <td style="text-align: center">6.019</td>
             <td style="text-align: center">-</td>
             <td style="text-align: center">5.977</td>
             <td style="text-align: center">-</td>
         <tr>
         </tr>
-            <td>hash func (1)</td>
+            <td><b>hash func (1)</b></td>
             <td style="text-align: center">4.966</td>
             <td style="text-align: center">21</td>
             <td style="text-align: center">4.925</td>
             <td style="text-align: center">21</td>
         <tr>
         </tr>
-            <td>strcmp</td>
+            <td><b>strcmp</b></td>
             <td style="text-align: center">4.028</td>
             <td style="text-align: center">23</td>
             <td style="text-align: center">3.989</td>
             <td style="text-align: center">23</td>
         <tr>
         </tr>
-            <td>hash func (2)</td>
+            <td><b>hash func (2)</b></td>
             <td style="text-align: center">3.692</td>
             <td style="text-align: center">9</td>
             <td style="text-align: center">3.654</td>
@@ -617,7 +623,10 @@ The program has become *`1.1`* times faster than the previous version of the pro
     </tbody>
 </table>
 
-### Сomparison table
+## Comparison table
+
+> [!NOTE]
+> It is also worth considering in the comparison that `perf` uses hardware counters to measure CPU cycles, including kernel activity. `valgrind (callgrind)`, on the other hand, emulates execution to count instructions executed (IR), offering detailed code-level analysis, but with significant slowdown and limited kernel visibility.
 
 <table>
     <thead>
@@ -638,28 +647,28 @@ The program has become *`1.1`* times faster than the previous version of the pro
     </thead>
     <tbody>
         <tr>
-            <td>base</td>
+            <td><b>base</b></td>
             <td style="text-align: center">5.959</td>
             <td style="text-align: center">6.019</td>
             <td style="text-align: center">5.924</td>
             <td style="text-align: center">5.977</td>
         <tr>
         </tr>
-            <td>hash func (1)</td>
+            <td><b>hash func (1)</b></td>
             <td style="text-align: center">4.914</td>
             <td style="text-align: center">4.966</td>
             <td style="text-align: center">4.879</td>
             <td style="text-align: center">4.925</td>
         <tr>
         </tr>
-            <td>strcmp</td>
+            <td><b>strcmp</b></td>
             <td style="text-align: center">3.891</td>
             <td style="text-align: center">4.028</td>
             <td style="text-align: center">3.859</td>
             <td style="text-align: center">3.989</td>
         <tr>
         </tr>
-            <td>hash func (2)</td>
+            <td><b>hash func (2)</b></td>
             <td style="text-align: center">3.557</td>
             <td style="text-align: center">3.692</td>
             <td style="text-align: center">3.525</td>
