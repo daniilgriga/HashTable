@@ -490,6 +490,55 @@ Re-profiling result:
 
 The program has become *`1.1`* times faster than the previous version of the program, i.e. gain = *`10%`*.
 
+## Summary
+
+<table>
+    <thead>
+        <tr>
+            <th rowspan=2>Optimization</th>
+            <th colspan=2 style="text-align: center">The whole program</th>
+            <th colspan=2 style="text-align: center">Search function</th>
+        </tr>
+        <tr>
+            <th style="text-align: center">Ir * 10^3</th>
+            <th style="text-align: center">gain in % than last</th>
+            <th style="text-align: center">Ir * 10^3</th>
+            <th style="text-align: center">gain in % than last</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>base</td>
+            <td style="text-align: center">59&nbsp;597&nbsp;711</td>
+            <td style="text-align: center">-</td>
+            <td style="text-align: center">59&nbsp;242&nbsp;545</td>
+            <td style="text-align: center">-</td>
+        <tr>
+        </tr>
+            <td>hash func (1)</td>
+            <td style="text-align: center">49&nbsp;143&nbsp;033</td>
+            <td style="text-align: center">21</td>
+            <td style="text-align: center">48&nbsp;799&nbsp;820</td>
+            <td style="text-align: center">21</td>
+        <tr>
+        </tr>
+            <td>strcmp</td>
+            <td style="text-align: center">38&nbsp;919&nbsp;835 </td>
+            <td style="text-align: center">26</td>
+            <td style="text-align: center">38&nbsp;591&nbsp;184</td>
+            <td style="text-align: center">26</td>
+        <tr>
+        </tr>
+            <td>hash func (2)</td>
+            <td style="text-align: center">35&nbsp;579&nbsp;390</td>
+            <td style="text-align: center">9</td>
+            <td style="text-align: center">35&nbsp;255&nbsp;451</td>
+            <td style="text-align: center">9</td>
+        </tr>
+    </tbody>
+</table>
+
+
 # Comparison between `valgrind` and `perf`
 
 In the last part of the program analysis, I used `valgrind` to profile the program. For training purposes, I will collect information about different versions of the program using `perf 6.11.11`.
@@ -502,14 +551,119 @@ The unoptimized version of the program:
 
 Let's go through our optimizations again and analyze the profiles:
 
-**1. First optimization (hash func)**
+## 1. First optimization (hash func)
 
 ![perf_1](img/perf_opt1.png)
 
-**2. Second optimization (strcmp)**
+The program has become *`1.2`* times faster than the previous version of the program, i.e. gain = *`20%`*.
+
+## 2. Second optimization (strcmp)
 
 ![perf_2](img/perf_opt2.png)
 
-**3. First optimization (hash func again)**
+The program has become *`1.2`* times faster than the previous version of the program, i.e. gain = *`20%`*.
+
+## 3. First optimization (hash func again)
 
 ![perf_3](img/perf_opt3.png)
+
+The program has become *`1.1`* times faster than the previous version of the program, i.e. gain = *`10%`*.
+
+## Summary
+
+<table>
+    <thead>
+        <tr>
+            <th rowspan=2>Optimization</th>
+            <th colspan=2 style="text-align: center">The whole program</th>
+            <th colspan=2 style="text-align: center">Search function</th>
+        </tr>
+        <tr>
+            <th style="text-align: center">Ir * 10^10</th>
+            <th style="text-align: center">gain in % than last</th>
+            <th style="text-align: center">Ir * 10^10</th>
+            <th style="text-align: center">gain in % than last</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>base</td>
+            <td style="text-align: center">6.019</td>
+            <td style="text-align: center">-</td>
+            <td style="text-align: center">5.977</td>
+            <td style="text-align: center">-</td>
+        <tr>
+        </tr>
+            <td>hash func (1)</td>
+            <td style="text-align: center">4.966</td>
+            <td style="text-align: center">21</td>
+            <td style="text-align: center">4.925</td>
+            <td style="text-align: center">21</td>
+        <tr>
+        </tr>
+            <td>strcmp</td>
+            <td style="text-align: center">4.028</td>
+            <td style="text-align: center">23</td>
+            <td style="text-align: center">3.989</td>
+            <td style="text-align: center">23</td>
+        <tr>
+        </tr>
+            <td>hash func (2)</td>
+            <td style="text-align: center">3.692</td>
+            <td style="text-align: center">9</td>
+            <td style="text-align: center">3.654</td>
+            <td style="text-align: center">9</td>
+        </tr>
+    </tbody>
+</table>
+
+### Сomparison table
+
+<table>
+    <thead>
+        <tr>
+            <th rowspan=3>Optimization</th>
+            <th colspan=2 style="text-align: center">The whole program</th>
+            <th colspan=2 style="text-align: center">Search function</th>
+        </tr>
+        <tr>
+            <th style="text-align: center">valgrind</th>
+            <th style="text-align: center">perf</th>
+            <th style="text-align: center">valgrind</th>
+            <th style="text-align: center">perf</th>
+        </tr>
+        <tr>
+            <th colspan=4 style="text-align: center">Ir * 10^10</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>base</td>
+            <td style="text-align: center">5.959</td>
+            <td style="text-align: center">6.019</td>
+            <td style="text-align: center">5.924</td>
+            <td style="text-align: center">5.977</td>
+        <tr>
+        </tr>
+            <td>hash func (1)</td>
+            <td style="text-align: center">4.914</td>
+            <td style="text-align: center">4.966</td>
+            <td style="text-align: center">4.879</td>
+            <td style="text-align: center">4.925</td>
+        <tr>
+        </tr>
+            <td>strcmp</td>
+            <td style="text-align: center">3.891</td>
+            <td style="text-align: center">4.028</td>
+            <td style="text-align: center">3.859</td>
+            <td style="text-align: center">3.989</td>
+        <tr>
+        </tr>
+            <td>hash func (2)</td>
+            <td style="text-align: center">3.557</td>
+            <td style="text-align: center">3.692</td>
+            <td style="text-align: center">3.525</td>
+            <td style="text-align: center">3.654</td>
+        </tr>
+    </tbody>
+</table>
