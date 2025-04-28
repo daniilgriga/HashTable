@@ -30,6 +30,8 @@ Lab work on programming in the [ded32](https://github.com/ded32) course on optim
     - [Hash function optimization](#hash-function-optimization)
     - [strcmp optimization](#strcmp-optimization)
     - [Hash function optimization. Part 2](#hash-function-optimization-part-2)
+- [Comparison between `callgrind` and `perf`](#comparison-between-callgrind-and-perf)
+
 # Research of hash functions
 
 1. To investigate hash functions, I load `Leo Tolstoy's text “War and Peace”` into a hash table.
@@ -488,4 +490,26 @@ Re-profiling result:
 
 The program has become *`1.1`* times faster than the previous version of the program, i.e. gain = *`10%`*.
 
+# Comparison between `valgrind` and `perf`
 
+In the last part of the program analysis, I used `valgrind` to profile the program. For training purposes, I will collect information about different versions of the program using `perf 6.11.11`.
+
+For convenience we will use the `hotspot 1.3.0` graphical `perf` handler.
+
+The unoptimized version of the program:
+
+![perf_base](img/perf_without.png)
+
+Let's go through our optimizations again and analyze the profiles:
+
+**1. First optimization (hash func)**
+
+![perf_1](img/perf_opt1.png)
+
+**2. Second optimization (strcmp)**
+
+![perf_2](img/perf_opt2.png)
+
+**3. First optimization (hash func again)**
+
+![perf_3](img/perf_opt3.png)
