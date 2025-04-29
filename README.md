@@ -10,9 +10,9 @@
 
 Lab work on programming in the [ded32](https://github.com/ded32) course on optimizing search in a hash table.
 
-A **Hash Table** is a data structure that maps keys to values for efficient lookups, insertions, and deletions.
+A **Hash Table** is a data structure that maps keys to values for efficient lookups and insertions.
 
-It uses a hash function to compute an index into an array where the value is stored. **Collisions** (when different keys map to the same index) are resolved using techniques like separate chaining (linked lists).
+It uses a hash function to compute an index into an array where the value is stored. **Collisions** (when different keys map to the same index) are resolved using one of techniques like separate chaining - **linked lists** (there is also an **open addressing** technique).
 
 Hash tables offer average-case time **complexity of O(1)** for operations, making them ideal for applications requiring fast access, such as caches, dictionaries, and databases.
 
@@ -34,19 +34,13 @@ Typically, a **load factor of `0.7` (`70%`) is ideal—balancing memory usage an
     - [JENKINS](#jenkins)
     - [XXHASH](#xxhash)
     - [Conclusion](#conclusion)
+- [Hardware](#hardware)
+- [Choosing profiler and setting targets](#choosing-profiler-and-setting-targets)
 - [Optimization of hash table](#optimization-of-hash-table)
-    - [Hardware](#hardware)
-    - [Profiling and setting targets](#profiling-and-setting-targets)
     - [Hash function optimization](#hash-function-optimization)
     - [strcmp optimization](#strcmp-optimization)
     - [Hash function optimization. Part 2](#hash-function-optimization-part-2)
     - [Summary](#summary)
-- [Comparison between `callgrind` and `perf`](#comparison-between-valgrind-and-perf)
-    - [First optimization (hash func)](#1-first-optimization-hash-func)
-    - [Second optimization (strcmp)](#2-second-optimization-strcmp)
-    - [Third optimization (hash func again)](#3-third-optimization-hash-func-again)
-    - [Summary](#summary-1)
-    - [Comparison table](#comparison-table)
 - [Conclusions](#conclusions)
 
 # Research of hash functions
@@ -333,35 +327,49 @@ Uses a seed and **more complex finalization**.
 
 Based on the **calculated variance**, the **JENKINS** hash function demonstrates the **lowest variance** among the provided list, indicating a **more uniform distribution** of hash values, which makes it one of the best choices for **minimizing collisions** and ensuring **efficient performance**.
 
-**BUT**, in the training framework, for simplicity, we will use **CRC32**. It's not that bad, but it's statistically slightly worse than **JENKINS**. For JENKINS or any other function, we'll have to implement **complex logic in assembly**, which we don't have enough class time for.
+**BUT**, **CRC32** matches the hardware better (it exists as a separate assembler instruction).  **CRC32** is statistically slightly worse than **JENKINS**, but they are very similar. For JENKINS or any other function, we would have to implement **complex logic in assembly language**, which we don't have enough instructional time for.
 
-# Optimization of hash table
-
-## Hardware
+# Hardware
 
 - **Compiler:** `g++ 13.3.0`
 - **Processor:** `AMD Ryzen 5 4500U 2.3 GHz (4 GHz in Turbo)`
 - **OS:** `Ubuntu 24.04.2 LTS`
-- **Profiler:** `valgrind 3.22.0`
-- **To visualize profiling data:** `kcachegrind 23.08.5`
 
-## Profiling and setting targets
+# Choosing profiler and setting targets
 
-Using `valgrind` to get the program's hot spots:
+For the first profiling of the base version of the program, we will use `valgrind 3.22.0` (to visualize the profiling data: `kcachegrind 23.08.5`) and `perf 6.11.11` (for convenience, we will use the `perf` `hotspot 1.3.0` graphical handler).
+
+Our goal is to determine which profiler is better for our particular program.
+
+Using `valgrind` we get the program's hot spots:
 
 ![without_opt](img/without_opt.png)
 
-Our optimization targets:
+And using `perf`:
 
-### 1. hash_CRC32
+![perf_without](img/perf_without.png)
 
-Find and implement a way to speed up hash calculation.
+`Perf` did a better job of determining which functions were hot in our program, while `valgrind` determined all function calls from **main**.
 
-### 2. `strcmp`
+For this reason, **we will use `perf` for further profiling**.
+
+Our optimization **targets**:
+
+### 1. `strcmp`
 
 In our case all words in the hash table are of a certain length, so we can write `strcmp` version for our case.
 
+### 2. `hash_CRC32`
+
+Find and implement a way to speed up hash calculation.
+
 After this steps we should check the program hot spots again.
+
+# REWRITE README COMING SOON...
+# REWRITE README COMING SOON...
+# REWRITE README COMING SOON...
+
+# Optimization of hash table
 
 ## Hash function optimization
 
