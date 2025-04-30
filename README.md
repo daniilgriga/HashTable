@@ -414,7 +414,7 @@ Re-profiling result:
 
 ![optimization_1](img/optimization_1.png)
 
-The program has become *``* times faster than the previous version of the program, i.e. gain = *``*.
+The program has become *`1.41`* times faster than the previous version of the program, i.e. gain = *`41%`*.
 
 Linear search is still the program's hottest spot, but **you can't do better than Intrinsics does**.
 
@@ -449,7 +449,7 @@ Re-profiling result:
 ![optimization_2](img/optimization_2.png)
 
 The highlighted function is our `CRC32` in `NASM`.
-The program has become *``* times faster, i.e. gain = *``*.
+The program has become *`1.25`* times faster, i.e. gain = *`25%`*.
 
 ## Hash function optimization. Part 2
 
@@ -473,7 +473,7 @@ Re-profiling result:
 
 ![optimization_3](img/optimization_3.png)
 
-The program has become *``* times faster than the previous version of the program, i.e. gain = *``*.
+The program has become *`1.15`* times faster than the previous version of the program, i.e. gain = *`15%`*.
 
 The hot spot of the program remains the **search function**, but that's okay because **it's the main functionality of the program**.
 
@@ -485,8 +485,6 @@ The optimizations we did made sense.
 
 They made our program much **faster** and **kept our code readable**.
 
-
-<!--
 <table>
     <thead>
         <tr>
@@ -506,29 +504,29 @@ They made our program much **faster** and **kept our code readable**.
             <td><b>base</b></td>
             <td style="text-align: center">4.458</td>
             <td style="text-align: center">-</td>
-            <td style="text-align: center">5.977</td>
+            <td style="text-align: center">4.445</td>
             <td style="text-align: center">-</td>
         <tr>
         </tr>
             <td><b>hash func (1)</b></td>
             <td style="text-align: center">3.155</td>
-            <td style="text-align: center">21</td>
-            <td style="text-align: center">4.925</td>
-            <td style="text-align: center">21</td>
+            <td style="text-align: center">41</td>
+            <td style="text-align: center">3.144</td>
+            <td style="text-align: center">41</td>
         <tr>
         </tr>
             <td><b>strcmp</b></td>
             <td style="text-align: center">2.528</td>
-            <td style="text-align: center">23</td>
-            <td style="text-align: center">3.989</td>
-            <td style="text-align: center">23</td>
+            <td style="text-align: center">25</td>
+            <td style="text-align: center">2.517</td>
+            <td style="text-align: center">25</td>
         <tr>
         </tr>
             <td><b>hash func (2)</b></td>
             <td style="text-align: center">2.192</td>
-            <td style="text-align: center">9</td>
-            <td style="text-align: center">3.654</td>
-            <td style="text-align: center">9</td>
+            <td style="text-align: center">15</td>
+            <td style="text-align: center">2.182</td>
+            <td style="text-align: center">15</td>
         </tr>
     </tbody>
 </table>
@@ -538,12 +536,12 @@ They made our program much **faster** and **kept our code readable**.
 I conducted a performance analysis of hash functions and implemented the following optimizations for a hash table, using Callgrind and Perf for profiling:
  - **Analysis of Hash Functions:** Evaluated different hash functions to identify bottlenecks in the hash table.
 
+ - **Profiling Tools:** Used Callgrind for detailed instruction-level analysis and Perf for hardware-based metrics (instructions, cycles) to measure improvements.
+
  - **Optimization 1:** Replaced the `CRC32 hash function` with a custom NASM implementation for faster computation.
 
  - **Optimization 2:** Wrote a custom `strcmp` using intrinsics to improve string comparison performance.
 
  - **Optimization 3:** Utilized inline assembly for the `CRC32 hash function` to further enhance speed.
 
- - **Profiling Tools:** Used Callgrind for detailed instruction-level analysis and Perf for hardware-based metrics (instructions, cycles) to measure improvements.
-
- - **Final program acceleration:** program performance increased by over **`68%`**
+ - **Final program acceleration:** program performance increased by over **`103%`**
