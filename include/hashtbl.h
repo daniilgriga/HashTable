@@ -20,7 +20,7 @@ struct HashTable_t* hashT_ctor (long size, enum Functions name);
 
 int hashT_dtor (struct HashTable_t* hsh_t);
 
-char** hashT_fill (struct HashTable_t* hashT_ptr, const char* filename, int* num_words);
+int hashT_fill (struct HashTable_t* hashT_ptr, const char* filename);
 
 int hashT_fill_search (struct HashTable_t* hashT_ptr, const char* data, uint32_t* hash);
 
@@ -32,6 +32,8 @@ int get_dump (struct HashTable_t* hashT_ptr, FILE* file);
 
 void get_data_for_histo (struct HashTable_t* hashT_ptr, enum Functions name);
 
-int hashT_TEST (struct HashTable_t* hashT_ptr, char** words_arr, int num_words, size_t num_tests);
+char* prepare_TEST (const char* filename, int* num_words);
+
+int hashT_TEST (struct HashTable_t* hashT_ptr, char* test_buffer, int num_words, size_t num_tests);
 
 #endif // HASHTBL_H

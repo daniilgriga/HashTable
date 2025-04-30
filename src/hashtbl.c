@@ -78,80 +78,40 @@ int hashT_dtor (struct HashTable_t* hashT_ptr)
     return NO_ERRORS;
 }
 
-char** hashT_fill (struct HashTable_t* hashT_ptr, const char* filename, int* num_words)
+int hashT_fill (struct HashTable_t* hashT_ptr, const char* filename)
 {
     assert (hashT_ptr);
+    assert (filename);
 
     long num_symb = 0;
     char* buffer = MakeBuffer (filename, &num_symb);
     if (buffer == NULL)
-        return NULL;
+        return 0;
 
-    char** words_arr = (char**) calloc ((size_t) num_symb, sizeof (char*));
-    if (words_arr == NULL)
-    {
-        fprintf (stderr, "Error with filling words array\n");
-        free (buffer);
-        return NULL;
-    }
-
-    *num_words = 0;
+    int num_words = 0;
     char* ptr = buffer;
     while (*ptr)
     {
-        while (*ptr && !isalpha(*ptr))
-        {
-            *ptr = '\0';
-            ptr++;
-        }
-
-        if (!*ptr) break;
-
         char* word = ptr;
-        while (*ptr && (isalpha(*ptr)))
+        while (*ptr != '\0')
             ptr++;
 
-        if (*ptr)
-        {
-            *ptr = '\0';
-            ptr++;
-        }
-
-        char* word_cp = (char*) calloc (strlen (word) + 1, sizeof (char));
-        if (word_cp == NULL)
-        {
-            fprintf (stderr, "ERROR with copying word\n");
-            for (int i = 0; i < *num_words; i++)
-                free (words_arr[i]);
-            free (words_arr);
-            free (buffer);
-            return NULL;
-        }
-
-        strcpy (word_cp, word);
+        int length = (int) (ptr - word);
 
         uint32_t hash = 0;
         int status = hashT_fill_search (hashT_ptr, word, &hash);
         if (status)
+        {
             hashT_insert (hashT_ptr, word, &hash);
+            num_words++;
+        }
 
-        words_arr[*num_words] = word_cp;
-        (*num_words)++;
+        ptr += MAX_LENGTH_WORD - length;
     }
 
-    words_arr = realloc (words_arr, (size_t)*num_words * sizeof (char*));
-    if (words_arr == NULL)
-    {
-        fprintf (stderr, "Error reallocating words array\n");
-        for (int i = 0; i < *num_words; i++)
-            free (words_arr[i]);
-        free (words_arr);
-        free (buffer);
-        return NULL;
-    }
     free (buffer);
 
-    return words_arr;
+    return num_words;
 }
 
 int hashT_fill_search (struct HashTable_t* hashT_ptr, const char* data, uint32_t* hash)
@@ -318,13 +278,49 @@ int hashT_search (struct HashTable_t* hashT_ptr, const char* data)
     }
 }
 
-int hashT_TEST (struct HashTable_t* hashT_ptr, char** words_arr, int num_words, size_t num_tests)
+char* prepare_TEST (const char* filename, int* num_words)
+{
+    assert (filename);
+
+    long num_symb = 0;
+    char* buffer = MakeBuffer (filename, &num_symb);
+    if (buffer == NULL)
+        return 0;
+
+    int counter_words = 0;
+    char* ptr = buffer;
+    while (*ptr)
+    {
+        char* word = ptr;
+        while (*ptr != '\0')
+            ptr++;
+
+        counter_words++;
+
+        int length = (int) (ptr - word);
+        ptr += MAX_LENGTH_WORD - length;
+    }
+
+    *num_words = counter_words;
+
+    return buffer;
+}
+
+int hashT_TEST (struct HashTable_t* hashT_ptr, char* test_buffer, int num_words, size_t num_tests)
 {
     int get = 0;
 
-    for (size_t i = 0; i < num_tests; i++)
-        for (int word_i = 0; word_i < num_words; word_i++)
-            get += hashT_search (hashT_ptr, words_arr[word_i]);
+    char* old_ptr = test_buffer;
 
+    for (size_t i = 0; i < num_tests; i++)
+    {
+        test_buffer = old_ptr;
+
+        for (int word_i = 0; word_i < num_words; word_i++)
+        {
+            get += hashT_search (hashT_ptr, test_buffer);
+            test_buffer += 32;
+        }
+    }
     return get;
 }

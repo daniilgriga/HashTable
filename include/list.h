@@ -1,7 +1,8 @@
 #ifndef LIST_H
 #define LIST_H
 
-#define RIGHT_MASK 0xFFFFFFFF
+#define FULL_MASK 0xFFFFFFFF
+#define MAX_LENGTH_WORD 32
 
 struct Node_t
 {
