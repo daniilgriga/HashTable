@@ -40,8 +40,13 @@ clean:
 	rm -f build/*.o $(EXECUTABLE)
 
 callgrind:
-	valgrind --dump-instr=yes --collect-jumps=yes --tool=callgrind --callgrind-out-file=test/callgrind/callgrind.out.$(prog) ./build/test
+	valgrind --dump-instr=yes --collect-jumps=yes --tool=callgrind --callgrind-out-file=test/callgrind/callgrind.out.$(prog) ./$(EXECUTABLE)
 	kcachegrind test/callgrind/callgrind.out.$(prog)
+
+perf:
+	perf record -o test/perf/$(prog).data -e instructions,cycles,cache-misses,branches,branch-misses ./$(EXECUTABLE)
+	hotspot ./test/perf/$(prog).data
 
 nasm:
 	nasm -f elf64 src/crc32.nasm -o build/crc32.o
+
