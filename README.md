@@ -37,8 +37,8 @@ Typically, a **load factor of `0.7` (`70%`) is ideal—balancing memory usage an
 - [Hardware](#hardware)
 - [Choosing profiler and setting targets](#choosing-profiler-and-setting-targets)
 - [Optimization of hash table](#optimization-of-hash-table)
-    - [Hash function optimization](#hash-function-optimization)
     - [strcmp optimization](#strcmp-optimization)
+    - [Hash function optimization](#hash-function-optimization)
     - [Hash function optimization. Part 2](#hash-function-optimization-part-2)
     - [Summary](#summary)
 - [Conclusions](#conclusions)
@@ -343,13 +343,16 @@ Our goal is to determine which profiler is better for our particular program.
 
 Using `valgrind` we get the program's hot spots:
 
-![without_opt](img/without_opt.png)
+![without_opt](img/without_opt_val.png)
 
 And using `perf`:
 
-![perf_without](img/perf_without.png)
+![perf_without](img/without_opt_perf.png)
 
 `Perf` did a better job of determining which functions were hot in our program, while `valgrind` determined all function calls from **main**.
+
+> [!NOTE]
+> It is also worth considering in the comparison that `perf` uses **hardware counters** to measure CPU cycles, including kernel activity. `valgrind (callgrind)`, on the other hand, **emulates execution to count instructions executed (IR)**, offering detailed code-level analysis, but with significant slowdown and limited kernel visibility.
 
 For this reason, **we will use `perf` for further profiling**.
 
@@ -365,11 +368,55 @@ Find and implement a way to speed up hash calculation.
 
 After this steps we should check the program hot spots again.
 
-# REWRITE README COMING SOON...
-# REWRITE README COMING SOON...
-# REWRITE README COMING SOON...
-
 # Optimization of hash table
+
+## `strcmp` optimization
+
+From the analysis of hash functions (especially the LENGTH function), we know that Leo Tolstoy's text contains words of this length:
+
+| Length | Number of words |
+|--------|-----------------|
+|   19   |        0        |
+|   18   |        1        |
+|   17   |        8        |
+|   16   |       21        |
+|   15   |       53        |
+|  ...   |       ...       |
+|    2   |       316       |
+|    1   |       58        |
+
+Based on these statistics, we can conclude that the comparison function can be rewritten for our particular case:
+
+1. There are no words longer than 32 characters in the text, so we can use **YMM-registers** to store words.
+
+2. We don't need the full functionality of the `strcmp`, we just need to know whether **the words matched or not**.
+
+```C
+#define MASK = 0xFFFFFFFF
+
+int boost_strcmp (const char* str_1, const char* str_2)
+{
+    __m256i string_1 = _mm256_loadu_si256 ((const __m256i*)(str_1));
+    __m256i string_2 = _mm256_loadu_si256 ((const __m256i*)(str_2));
+
+    __m256i mask_avx = _mm256_cmpeq_epi8 (string_1, string_2);
+
+    if (_mm256_movemask_epi8 (mask_avx) == MASK)
+        return 0;
+
+    return 1;
+}
+
+#undef MASK
+```
+
+Re-profiling result:
+
+![optimization_1](img/optimization_1.png)
+
+The program has become *``* times faster than the previous version of the program, i.e. gain = *``*.
+
+Linear search is still the program's hottest spot, but **you can't do better than Intrinsics does**.
 
 ## Hash function optimization
 
@@ -377,9 +424,9 @@ I have implemented a CRC32 hash function in `NASM assembly` language using `SSE4
 
 ``` nasm
 section .text
-global hash_crc32
+global hash_CRC32_nasm
 
-hash_crc32:
+hash_CRC32_nasm:
     mov eax, 0xFFFFFFFF
     xor rcx, rcx
 
@@ -399,99 +446,10 @@ hash_crc32:
 
 Re-profiling result:
 
-![optimization1](img/optimization1.png)
+![optimization_2](img/optimization_2.png)
 
 The highlighted function is our `CRC32` in `NASM`.
-The program has become *`1.21`* times faster, i.e. gain = *`21%`*.
-
-## `strcmp` optimization
-
-From the analysis of hash functions (the LENGTH function), we know that Leo Tolstoy's text contains words of this length:
-
-| Length | Number of words |
-|--------|-----------------|
-|   18   |        1        |
-|   17   |        8        |
-|   16   |       21        |
-|   15   |       53        |
-|  ...   |       ...       |
-|    2   |       316       |
-|    1   |       58        |
-
-Based on these statistics, we can conclude that the comparison function can be rewritten for our particular case:
-
-1. For strings shorter than 16 bytes, the function uses `SSE` to compare 16 bytes simultaneously, speeding up the process considerably.
-
-2. For strings longer than 16 bytes, the remaining characters are processed byte-by-byte to ensure correct comparison.
-
-<details>
-<summary><strong>Click to expand/collapse new strcmp</strong></summary>
-
-```C
-int boost_strcmp (const char *str_1, const char *str_2)
-{
-    __m128i s1 = _mm_loadu_si128 ((const __m128i*)str_1);   // load 16 bytes into SIMD registers
-    __m128i s2 = _mm_loadu_si128 ((const __m128i*)str_2);
-
-    __m128i eq = _mm_cmpeq_epi8 (s1, s2);                   // compare bytes
-
-    __m128i zero  = _mm_setzero_si128();                    // zero vector
-    __m128i term1 = _mm_cmpeq_epi8 (s1, zero);              // compare bytes
-
-    int mask_eq    = _mm_movemask_epi8 (eq);                // creates bit masks (1 - equal; 0 - differ)
-    int mask_term1 = _mm_movemask_epi8 (term1);             //                   (1 - where '\0'
-
-    if (mask_eq != 0xFFFF)                                  // if not all bytes are equal
-    {
-        int pos = __builtin_ctz (~mask_eq);                 // find first differing byte | `~` = complement of the original number
-        if (mask_term1 & (1 << pos))                        // if diff position in '\0' -> strings are equal
-            return 0;
-
-        return (unsigned char)str_1[pos] - (unsigned char)str_2[pos];
-    }
-
-    if (mask_term1)                                         // if there is in first 16 bytes '\0' -> equal
-        return 0;
-
-    str_1 += 16;
-    str_2 += 16;
-    while (*str_1 && *str_1 == *str_2)                      // compare remaining bytes one by one
-    {
-        str_1++;
-        str_2++;
-    }
-    return (unsigned char)*str_1 - (unsigned char)*str_2;
-}
-```
-
-It might be interesting to look at the implementation of `__builtin_ctz`, it uses the `bsf` (Bit Scan Forward) instruction:
-
-```nasm
-section .text
-global __builtin_ctz
-
-__builtin_ctz:
-    test edi, edi
-    jz .zero
-    bsf eax, edi
-    ret
-
-.zero:
-    mov eax, 32
-    ret
-```
-
-</details>
-
-Re-profiling result:
-
-![optimization2](img/optimization2.png)
-
-The compiler inlined `boost_strcmp`, so let's see how many instructions the main has changed by.
-
-The program has become *`1.26`* times faster than the previous version of the program, i.e. gain = *`26%`*.
-
-Also, we notice that the hash counting function remains the hottest one.
+The program has become *``* times faster, i.e. gain = *``*.
 
 ## Hash function optimization. Part 2
 
@@ -513,91 +471,22 @@ static inline uint32_t hash_CRC32_inline (const char* key)
 
 Re-profiling result:
 
-![optimization3](img/optimization3.png)
+![optimization_3](img/optimization_3.png)
 
-The program has become *`1.09`* times faster than the previous version of the program, i.e. gain = *`9%`*.
+The program has become *``* times faster than the previous version of the program, i.e. gain = *``*.
 
-## Summary
+The hot spot of the program remains the **search function**, but that's okay because **it's the main functionality of the program**.
 
-<table>
-    <thead>
-        <tr>
-            <th rowspan=2>Optimization</th>
-            <th colspan=2 style="text-align: center">The whole program</th>
-            <th colspan=2 style="text-align: center">Search function</th>
-        </tr>
-        <tr>
-            <th style="text-align: center">Ir * 10^3</th>
-            <th style="text-align: center">gain in % than last</th>
-            <th style="text-align: center">Ir * 10^3</th>
-            <th style="text-align: center">gain in % than last</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><b>base</b></td>
-            <td style="text-align: center">59&nbsp;597&nbsp;711</td>
-            <td style="text-align: center">-</td>
-            <td style="text-align: center">59&nbsp;242&nbsp;545</td>
-            <td style="text-align: center">-</td>
-        <tr>
-        </tr>
-            <td><b>hash func (1)</b></td>
-            <td style="text-align: center">49&nbsp;143&nbsp;033</td>
-            <td style="text-align: center">21</td>
-            <td style="text-align: center">48&nbsp;799&nbsp;820</td>
-            <td style="text-align: center">21</td>
-        <tr>
-        </tr>
-            <td><b>strcmp</b></td>
-            <td style="text-align: center">38&nbsp;919&nbsp;835 </td>
-            <td style="text-align: center">26</td>
-            <td style="text-align: center">38&nbsp;591&nbsp;184</td>
-            <td style="text-align: center">26</td>
-        <tr>
-        </tr>
-            <td><b>hash func (2)</b></td>
-            <td style="text-align: center">35&nbsp;579&nbsp;390</td>
-            <td style="text-align: center">9</td>
-            <td style="text-align: center">35&nbsp;255&nbsp;451</td>
-            <td style="text-align: center">9</td>
-        </tr>
-    </tbody>
-</table>
-
-
-# Comparison between `valgrind` and `perf`
-
-In the last part of the program analysis, I used `valgrind` to profile the program. For training purposes, I will collect information about different versions of the program using `perf 6.11.11`.
-
-For convenience we will use the `hotspot 1.3.0` graphical `perf` handler.
-
-The unoptimized version of the program:
-
-![perf_base](img/perf_without.png)
-
-Let's go through our optimizations again and analyze the profiles:
-
-## 1. First optimization (hash func)
-
-![perf_1](img/perf_opt1.png)
-
-The program has become *`1.21`* times faster than the previous version of the program, i.e. gain = *`21%`*.
-
-## 2. Second optimization (strcmp)
-
-![perf_2](img/perf_opt2.png)
-
-The program has become *`1.23`* times faster than the previous version of the program, i.e. gain = *`23%`*.
-
-## 3. Third optimization (hash func again)
-
-![perf_3](img/perf_opt3.png)
-
-The program has become *`1.09`* times faster than the previous version of the program, i.e. gain = *`9%`*.
+Also from the program profile we can see that **most of the load is taken by the linear search**.
 
 ## Summary
 
+The optimizations we did made sense.
+
+They made our program much **faster** and **kept our code readable**.
+
+
+<!--
 <table>
     <thead>
         <tr>
@@ -615,85 +504,31 @@ The program has become *`1.09`* times faster than the previous version of the pr
     <tbody>
         <tr>
             <td><b>base</b></td>
-            <td style="text-align: center">6.019</td>
+            <td style="text-align: center">4.458</td>
             <td style="text-align: center">-</td>
             <td style="text-align: center">5.977</td>
             <td style="text-align: center">-</td>
         <tr>
         </tr>
             <td><b>hash func (1)</b></td>
-            <td style="text-align: center">4.966</td>
+            <td style="text-align: center">3.155</td>
             <td style="text-align: center">21</td>
             <td style="text-align: center">4.925</td>
             <td style="text-align: center">21</td>
         <tr>
         </tr>
             <td><b>strcmp</b></td>
-            <td style="text-align: center">4.028</td>
+            <td style="text-align: center">2.528</td>
             <td style="text-align: center">23</td>
             <td style="text-align: center">3.989</td>
             <td style="text-align: center">23</td>
         <tr>
         </tr>
             <td><b>hash func (2)</b></td>
-            <td style="text-align: center">3.692</td>
+            <td style="text-align: center">2.192</td>
             <td style="text-align: center">9</td>
             <td style="text-align: center">3.654</td>
             <td style="text-align: center">9</td>
-        </tr>
-    </tbody>
-</table>
-
-## Comparison table
-
-> [!NOTE]
-> It is also worth considering in the comparison that `perf` uses **hardware counters** to measure CPU cycles, including kernel activity. `valgrind (callgrind)`, on the other hand, **emulates execution to count instructions executed (IR)**, offering detailed code-level analysis, but with significant slowdown and limited kernel visibility.
-
-<table>
-    <thead>
-        <tr>
-            <th rowspan=3>Optimization</th>
-            <th colspan=2 style="text-align: center">The whole program</th>
-            <th colspan=2 style="text-align: center">Search function</th>
-        </tr>
-        <tr>
-            <th style="text-align: center">valgrind</th>
-            <th style="text-align: center">perf</th>
-            <th style="text-align: center">valgrind</th>
-            <th style="text-align: center">perf</th>
-        </tr>
-        <tr>
-            <th colspan=4 style="text-align: center">Instructions * 10^10</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><b>base</b></td>
-            <td style="text-align: center">5.959</td>
-            <td style="text-align: center">6.019</td>
-            <td style="text-align: center">5.924</td>
-            <td style="text-align: center">5.977</td>
-        <tr>
-        </tr>
-            <td><b>hash func (1)</b></td>
-            <td style="text-align: center">4.914</td>
-            <td style="text-align: center">4.966</td>
-            <td style="text-align: center">4.879</td>
-            <td style="text-align: center">4.925</td>
-        <tr>
-        </tr>
-            <td><b>strcmp</b></td>
-            <td style="text-align: center">3.891</td>
-            <td style="text-align: center">4.028</td>
-            <td style="text-align: center">3.859</td>
-            <td style="text-align: center">3.989</td>
-        <tr>
-        </tr>
-            <td><b>hash func (2)</b></td>
-            <td style="text-align: center">3.557</td>
-            <td style="text-align: center">3.692</td>
-            <td style="text-align: center">3.525</td>
-            <td style="text-align: center">3.654</td>
         </tr>
     </tbody>
 </table>
