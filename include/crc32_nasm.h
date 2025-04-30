@@ -3,6 +3,6 @@
 
 #include <stdint.h>
 
-uint32_t hash_crc32_nasm (const char* key);
+uint32_t hash_CRC32_nasm (const char* key);
 
 #endif

@@ -2,7 +2,7 @@
 ; Compile:  nasm -f elf64 crc32.nasm -o crc32.o
 
 section .text
-global hash_crc32_nasm
+global hash_CRC32_nasm
 
 ;|-----REGISTER-----|------VALUE-------|
 ;|------------------|------------------|
@@ -11,7 +11,7 @@ global hash_crc32_nasm
 ;|       rcx        |    count bytes   |
 ;|------------------|------------------|
 
-hash_crc32_nasm:
+hash_CRC32_nasm:
     mov eax, 0xFFFFFFFF
     xor rcx, rcx
 
