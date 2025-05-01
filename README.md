@@ -558,7 +558,7 @@ They made our program much **faster** and **kept our code readable**.
 I conducted a performance analysis of hash functions and implemented the following optimizations for a hash table, using Callgrind and Perf for profiling:
  - **Analysis of Hash Functions:** Evaluated different hash functions to identify bottlenecks in the hash table.
 
- - **Profiling Tools:** Used Callgrind for detailed instruction-level analysis and Perf for hardware-based metrics (instructions, cycles) to measure improvements.
+ - **Profiling Tools:** Used `сallgrind` and `perf` to get hardware metrics (instructions, cycles) and compared them in the case of working with my program
 
  - **Optimization 1:** Replaced the `CRC32 hash function` with a custom NASM implementation for faster computation.
 
