@@ -375,7 +375,20 @@ After this steps we should check the program hot spots again.
 
 To make it easier to read words from the literature, both for filling the hash table and for testing the search function, we need to **align words by 32 bytes** (this will also be useful for **AVX2 instructions**):
 
-<div style="display:flex; justify-content:space-between; width:100%;"> <div style="text-align:center; width:45%;"> <img src="img/b_WaP.png" alt="First image" width="100%" /> <p><b>War and Peace.bin</b> (for filling Hash Table)</p> </div> <div style="text-align:center; width:45%;"> <img src="img/b_F451.png" alt="Second image" width="100%" /> <p><b>Fahrenhait 451.bin</b> (for search func test)</p> </div> </div>
+<table>
+    <thead>
+        <tr>
+            <th rowspan=1 style="text-align: center"><img src="img/b_WaP.png"  alt="War and Peace.bin" width="500"></th>
+            <th colspan=1 style="text-align: center"><img src="img/b_F451.png" alt="Fahrenhait 451.bi" width="500"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="text-align: center"><b>War and Peace.bin</b> (for filling Hash Table)</td>
+            <td style="text-align: center"><b>Fahrenhait 451.bin</b> (for search func test) </td>
+        </tr>
+    </tbody>
+</table>
 
 I did it with [get_binary.py](https://github.com/daniilgriga/HashTable/blob/main/test/get_binary.py).
 
