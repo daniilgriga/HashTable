@@ -10,11 +10,21 @@
 
 Lab work on programming in the [ded32](https://github.com/ded32) course on optimizing search in a hash table.
 
-A **Hash Table** is a data structure that maps keys to values for efficient lookups and insertions.
+**Hash Table:** A data structure for fast key-value storage and retrieval using a hash function, with average O(1) time for insert and search (sometimes delete).
 
-It uses a **hash function** to compute an index into an array where the value is stored. **Collisions** (when different keys map to the same index) are resolved using one of techniques like separate chaining - **linked lists** (there is also an **open addressing** technique).
+**Hash Function:** Maps keys to array indices. A good hash function minimizes collisions and distributes keys evenly.
 
-Hash tables offer average-case time **complexity of O(1)** for operations, making them ideal for applications requiring fast access, such as caches, dictionaries, and databases.
+**Types of Hash Tables:**
+
+ - **Chaining:** Collisions are resolved by storing elements in a linked list at each index. Simple and effective but may use more memory.
+
+ - **Open Addressing:** Stores all elements in the array. Collisions resolved by probing (linear, quadratic, or double hashing). Memory-efficient but degrades with high load.
+
+ - **Perfect Hashing:** Uses a collision-free hash function for a static key set. Ideal O(1) performance but complex to construct.
+
+ - **Cuckoo Hashing:** Uses two hash functions. Elements may displace others, moving them to alternate positions. Guarantees O(1) worst-case lookup but may need rehashing on cycles.
+
+**Collision:** When different keys map to the same index. Resolved using techniques like **chaining** or **open addressing**.
 
 **Load Factor** is the ratio of the number of elements in a hash table to its total number of slots (array size).
 
