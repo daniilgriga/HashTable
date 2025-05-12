@@ -326,6 +326,48 @@ Uses a seed and **more complex finalization**.
 
 ## Conclusion
 
+<table>
+    <thead>
+        <tr>
+            <th style="text-align: center">Hash function</th>
+            <th style="text-align: center">Variance</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="text-align: center"> LENGTH</td>
+            <td style="text-align: center"> 27446.41</td>
+        </tr>
+            <td style="text-align: center"> ASCII </td>
+            <td style="text-align: center"> 266.65</td>
+        </tr>
+            <td style="text-align: center">SUM_POS</td>
+            <td style="text-align: center"> 76.44</td>
+        </tr>
+            <td style="text-align: center"> MULT</td>
+            <td style="text-align: center"> 11.09</td>
+        </tr>
+            <td style="text-align: center"> DJB2</td>
+            <td style="text-align: center"> 11.62</td>
+        </tr>
+            <td style="text-align: center"> SDBM</td>
+            <td style="text-align: center"> 11.27</td>
+        </tr>
+            <td style="text-align: center"> CRC32</td>
+            <td style="text-align: center"> 11.20</td>
+        </tr>
+            <td style="text-align: center"> FNV_1a</td>
+            <td style="text-align: center"> 11.07</td>
+        </tr>
+            <td style="text-align: center"> JENKINS</td>
+            <td style="text-align: center"> 10.97</td>
+        </tr>
+            <td style="text-align: center"> XXHASH </td>
+            <td style="text-align: center"> 11.51</td>
+        </tr>
+    </thead>
+</table
+
 Based on the **calculated variance**, the **JENKINS** hash function demonstrates the **lowest variance** among the provided list, indicating a **more uniform distribution** of hash values, which makes it one of the best choices for **minimizing collisions** and ensuring **efficient performance**.
 
 **BUT**, **CRC32** matches the hardware better (it exists as a separate assembler instruction).  **CRC32** is statistically slightly worse than **JENKINS**, but they are very similar. For JENKINS or any other function, we would have to implement **complex logic in assembly language**, which we don't have enough instructional time for.
@@ -438,7 +480,8 @@ Re-profiling result:
 
 The program has become *`1.41`* times faster than the previous version of the program, i.e. gain = *`41%`*.
 
-Linear search is still the program's hottest spot, but **you can't do better than Intrinsics does**.
+> [!NOTE]
+> The following function `hashT_search` contains optimizations of the previous step and a recursive call to itself. If we apply the optimization by assembly insertion or rewrite the whole function in assembly language, the optimizations of the previous step will be meaningless. Therefore, let us choose `hashCRC32` as **the next function to be optimized**.
 
 ## Hash function optimization
 
@@ -555,15 +598,16 @@ They made our program much **faster** and **kept our code readable**.
 
 # Conclusions
 
-I conducted a performance analysis of hash functions and implemented the following optimizations for a hash table, using Callgrind and Perf for profiling:
+During this lab work, I did:
+
  - **Analysis of Hash Functions:** Evaluated different hash functions to identify bottlenecks in the hash table.
 
- - **Profiling Tools:** Used `сallgrind` and `perf` to get hardware metrics (instructions, cycles) and compared them in the case of working with my program
+ - **Utilized profiling Tools:** Used `сallgrind` and `perf` to get hardware metrics (instructions, cycles) and compared them in the case of working with my program.
 
- - **Optimization 1:** Replaced the `CRC32 hash function` with a custom NASM implementation for faster computation.
+ - **Optimization 1:** Wrote a **custom** `strcmp` **using intrinsics** to improve string comparison performance.
 
- - **Optimization 2:** Wrote a custom `strcmp` using intrinsics to improve string comparison performance.
+ - **Optimization 2:** Replaced the `CRC32 hash function` with a **custom NASM implementation** for faster computation.
 
- - **Optimization 3:** Utilized inline assembly for the `CRC32 hash function` to further enhance speed.
+ - **Optimization 3:** Utilized **inline assembly** for the `CRC32 hash function` to further enhance speed.
 
- - **Final program acceleration:** program performance increased by over **`103%`**
+ - **Achieved final program acceleration:** program performance increased by over **`103%`**.
