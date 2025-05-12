@@ -425,14 +425,14 @@ To make it easier to read words from the literature, both for filling the hash t
 <table>
     <thead>
         <tr>
-            <th rowspan=1 style="text-align: center"><img src="img/b_WaP.png"  alt="War and Peace.bin" width="500"></th>
-            <th colspan=1 style="text-align: center"><img src="img/b_F451.png" alt="Fahrenhait 451.bi" width="500"></th>
+            <th rowspan=1 style="text-align: center"><img src="img/b_WaP.png"  alt="War _and_Peace.bin" width="500"></th>
+            <th colspan=1 style="text-align: center"><img src="img/b_F451.png" alt="Fahrenhait_451.bi" width="500"></th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td style="text-align: center"><b>War and Peace.bin</b> (for filling Hash Table)</td>
-            <td style="text-align: center"><b>Fahrenhait 451.bin</b> (for search func test) </td>
+            <td style="text-align: center"><b>War_and_Peace.bin</b> (for filling Hash Table)</td>
+            <td style="text-align: center"><b>Fahrenhait_451.bin</b> (for search func test) </td>
         </tr>
     </tbody>
 </table>
@@ -553,6 +553,18 @@ Also from the program profile we can see that **most of the load is taken by the
 
 The optimizations we did made sense.
 
+
+
+
+
+
+
+
+
+
+
+
+
 They made our program much **faster** and **kept our code readable**.
 
 <table>
@@ -572,30 +584,30 @@ They made our program much **faster** and **kept our code readable**.
     <tbody>
         <tr>
             <td><b>base</b></td>
-            <td style="text-align: center">4.458 ± 0.011</td>
+            <td style="text-align: center">4.454 ± 0.003</td>
             <td style="text-align: center">-</td>
-            <td style="text-align: center">4.445 ± 0.010</td>
+            <td style="text-align: center">4.440 ± 0.003</td>
             <td style="text-align: center">-</td>
         </tr>
         <tr>
             <td><b>boost strcmp</b></td>
-            <td style="text-align: center">3.155 ± 0.016</td>
+            <td style="text-align: center">3.152 ± 0.002</td>
             <td style="text-align: center">41</td>
-            <td style="text-align: center">3.144 ± 0.019</td>
+            <td style="text-align: center">3.141 ± 0.002</td>
             <td style="text-align: center">41</td>
         </tr>
         <tr>
             <td><b>nasm hash func</b></td>
-            <td style="text-align: center">2.528 ± 0.012</td>
+            <td style="text-align: center">2.523 ± 0.003</td>
             <td style="text-align: center">25</td>
-            <td style="text-align: center">2.517 ± 0.012</td>
+            <td style="text-align: center">2.512 ± 0.003</td>
             <td style="text-align: center">25</td>
         </tr>
         <tr>
             <td><b>inline asm hash func</b></td>
-            <td style="text-align: center">2.192 ± 0.009</td>
+            <td style="text-align: center">2.192 ± 0.003</td>
             <td style="text-align: center">15</td>
-            <td style="text-align: center">2.182 ± 0.011</td>
+            <td style="text-align: center">2.182 ± 0.003</td>
             <td style="text-align: center">15</td>
         </tr>
     </tbody>
