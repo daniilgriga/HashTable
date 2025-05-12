@@ -16,13 +16,13 @@ Lab work on programming in the [ded32](https://github.com/ded32) course on optim
 
 **Types of Hash Tables:**
 
- - **Chaining:** Collisions are resolved by storing elements in a linked list at each index. Simple and effective but may use more memory.
+ - **Chaining:** Collisions are resolved by storing elements in a linked list at each index. Simple and effective but may use more memory *(I use this type!)*.
 
- - **Open Addressing:** Stores all elements in the array. Collisions resolved by probing (linear, quadratic, or double hashing). Memory-efficient but degrades with high load.
+ - **Open Addressing:** Stores all elements in the array. Collisions resolved by probing. Memory-efficient but degrades with high load.
 
- - **Perfect Hashing:** Uses a collision-free hash function for a static key set. Ideal O(1) performance but complex to construct.
+ - **Perfect Hashing:** Uses a collision-free hash function for a static key set. Ideal `O(1)` performance but complex to construct.
 
- - **Cuckoo Hashing:** Uses two hash functions. Elements may displace others, moving them to alternate positions. Guarantees O(1) worst-case lookup but may need rehashing on cycles.
+ - **Cuckoo Hashing:** Uses two hash functions. Elements may displace others, moving them to alternate positions.
 
 **Collision:** When different keys map to the same index. Resolved using techniques like **chaining** or **open addressing**.
 
@@ -58,9 +58,9 @@ Typically, a **load factor of `0.7` (`70%`) is ideal—balancing memory usage an
 
 1. To investigate hash functions, I load `Leo Tolstoy's text “War and Peace”` into a hash table.
 
-2. I load the number of buckets (`2000`) and the number of elements in it in `data.txt`.
+2. I load the number of buckets (`20000`) and the number of elements in it in `data.txt`.
 
-3. **Load factor** is `10.9`. (For training purposes, so that assembly optimizations are more **visible**)
+3. **Load factor** is `1.5`. (For training purposes, so that assembly optimizations are more **visible**)
 
 3. I use `histo.py` to build histograms using the data from `data.txt`.
 
