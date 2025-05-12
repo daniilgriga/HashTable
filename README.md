@@ -422,11 +422,14 @@ Our optimization **targets**:
 
 In our case all words in the hash table are of a certain length, so we can write `strcmp` version for our case.
 
-### 2. `hash_CRC32`
+### 2. `hashT_search::list_search`
+
+### 3. `hash_CRC32`
 
 Find and implement a way to speed up hash calculation.
 
-After this steps we should check the program hot spots again.
+> [!NOTE]
+> **After every steps we should check the program hot spots again!**
 
 # Optimization of hash table
 
