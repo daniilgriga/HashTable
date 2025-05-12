@@ -70,10 +70,5 @@ int boost_strcmp (const char* str_1, const char* str_2)
     __m256i string_1 = _mm256_loadu_si256 ((const __m256i*)(str_1));
     __m256i string_2 = _mm256_loadu_si256 ((const __m256i*)(str_2));
 
-    __m256i mask_avx = _mm256_cmpeq_epi8 (string_1, string_2);
-
-    if (_mm256_movemask_epi8 (mask_avx) == (int)FULL_MASK)
-        return 0;
-
-    return 1;
+    return ~(_mm256_movemask_epi8 (_mm256_cmpeq_epi8 (string_1, string_2)));
 }

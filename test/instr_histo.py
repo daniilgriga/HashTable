@@ -3,7 +3,7 @@ import numpy as np
 
 versions = ['base', 'boost_strcmp', 'nasm', 'inline']
 
-search_instr = [4.440e10,  3.141e10, 2.512e10, 2.182e9]
+search_instr = [4.440e10,  3.141e10, 2.512e10, 2.182e10]
 main_instr   = [0.013e10, 0.011e10, 0.011e10, 0.01e10]
 
 search_error = [0.03e9, 0.02e9, 0.02e9, 0.03e9]
