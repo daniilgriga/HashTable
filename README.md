@@ -377,6 +377,11 @@ Based on the **calculated variance**, the **JENKINS** hash function demonstrates
 - **Compiler:** `g++ 13.3.0`
 - **Processor:** `AMD Ryzen 5 4500U 2.3 GHz (4 GHz in Turbo)`
 - **OS:** `Ubuntu 24.04.2 LTS`
+- **Number of processor cores:** `6`
+- **L2 cache size:** `3 MB`
+- **L3 cache size:** `8 MB`
+
+All measurements will be performed at the same processor temperature range from **40°C to 60°C** and with the charger connected.
 
 # Choosing profiler and setting targets
 
@@ -567,30 +572,30 @@ They made our program much **faster** and **kept our code readable**.
     <tbody>
         <tr>
             <td><b>base</b></td>
-            <td style="text-align: center">4.458</td>
+            <td style="text-align: center">4.458 ± 0.011</td>
             <td style="text-align: center">-</td>
-            <td style="text-align: center">4.445</td>
+            <td style="text-align: center">4.445 ± 0.010</td>
             <td style="text-align: center">-</td>
-        <tr>
         </tr>
-            <td><b>hash func (1)</b></td>
-            <td style="text-align: center">3.155</td>
+        <tr>
+            <td><b>boost strcmp</b></td>
+            <td style="text-align: center">3.155 ± 0.016</td>
             <td style="text-align: center">41</td>
-            <td style="text-align: center">3.144</td>
+            <td style="text-align: center">3.144 ± 0.019</td>
             <td style="text-align: center">41</td>
-        <tr>
         </tr>
-            <td><b>strcmp</b></td>
-            <td style="text-align: center">2.528</td>
-            <td style="text-align: center">25</td>
-            <td style="text-align: center">2.517</td>
-            <td style="text-align: center">25</td>
         <tr>
+            <td><b>nasm hash func</b></td>
+            <td style="text-align: center">2.528 ± 0.012</td>
+            <td style="text-align: center">25</td>
+            <td style="text-align: center">2.517 ± 0.012</td>
+            <td style="text-align: center">25</td>
         </tr>
-            <td><b>hash func (2)</b></td>
-            <td style="text-align: center">2.192</td>
+        <tr>
+            <td><b>inline asm hash func</b></td>
+            <td style="text-align: center">2.192 ± 0.009</td>
             <td style="text-align: center">15</td>
-            <td style="text-align: center">2.182</td>
+            <td style="text-align: center">2.182 ± 0.011</td>
             <td style="text-align: center">15</td>
         </tr>
     </tbody>
