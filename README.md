@@ -58,7 +58,7 @@ Typically, a **load factor of `0.7` (`70%`) is ideal—balancing memory usage an
 
 1. To investigate hash functions, I load `Leo Tolstoy's text “War and Peace”` into a hash table.
 
-2. I load the number of buckets (`20000`) and the number of elements in it in `data.txt`.
+2. I load the number of buckets (`20k`) and the number of elements in it in `data.txt`.
 
 3. **Load factor** is `1.5`. (For training purposes, so that assembly optimizations are more **visible**)
 
@@ -530,7 +530,8 @@ Re-profiling result:
 
 ![optimization_2](img/optimization_2.png)
 
-The highlighted function is our `CRC32` in `NASM`.
+The highlighted function is our `CRC32` in `NASM`, because the hash function should be the hot spot of the program.
+
 The program has become *`1.25`* times faster, i.e. gain = *`25%`*.
 
 ## Hash function optimization. Part 2
