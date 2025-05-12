@@ -30,7 +30,7 @@ HashFunction select_function (enum Functions name)
         case JENKINS:      fprintf (stderr, "JENKINS\n");     return hash_JENKINS;
         case XXHASH:       fprintf (stderr, "XXHASH\n");      return hash_XXHASH;
         case CRC32_INLINE: fprintf (stderr, "CRC32INLINE\n"); return hash_CRC32_inline;
-        case CRC32_NASM:   fprintf (stderr, "CRC32NASM\n");   return hash_crc32_nasm;
+        case CRC32_NASM:   fprintf (stderr, "CRC32NASM\n");   return hash_CRC32_nasm;
 
         default:
             fprintf (stderr, "There is no that hash function\n");

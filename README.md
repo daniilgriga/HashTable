@@ -12,7 +12,7 @@ Lab work on programming in the [ded32](https://github.com/ded32) course on optim
 
 A **Hash Table** is a data structure that maps keys to values for efficient lookups and insertions.
 
-It uses a hash function to compute an index into an array where the value is stored. **Collisions** (when different keys map to the same index) are resolved using one of techniques like separate chaining - **linked lists** (there is also an **open addressing** technique).
+It uses a **hash function** to compute an index into an array where the value is stored. **Collisions** (when different keys map to the same index) are resolved using one of techniques like separate chaining - **linked lists** (there is also an **open addressing** technique).
 
 Hash tables offer average-case time **complexity of O(1)** for operations, making them ideal for applications requiring fast access, such as caches, dictionaries, and databases.
 
@@ -377,6 +377,8 @@ Based on the **calculated variance**, the **JENKINS** hash function demonstrates
 - **Compiler:** `g++ 13.3.0`
 - **Processor:** `AMD Ryzen 5 4500U 2.3 GHz (4 GHz in Turbo)`
 - **OS:** `Ubuntu 24.04.2 LTS`
+- **RAM:** `16GB, DDR4, 2400MHz SO-DIMM`
+- **Disk:** `512GB SSD`
 - **Number of processor cores:** `6`
 - **L2 cache size:** `3 MB`
 - **L3 cache size:** `8 MB`
@@ -553,19 +555,13 @@ Also from the program profile we can see that **most of the load is taken by the
 
 The optimizations we did made sense.
 
-
-
-
-
-
-
-
-
-
-
-
-
 They made our program much **faster** and **kept our code readable**.
+
+[data.md](https://github.com/daniilgriga/HashTable/blob/main/data.md) contains measurements and their processing.
+
+The program was run 10 times at each optimization level.
+
+![final_hist](img/final_hist.png)
 
 <table>
     <thead>
@@ -584,7 +580,7 @@ They made our program much **faster** and **kept our code readable**.
     <tbody>
         <tr>
             <td><b>base</b></td>
-            <td style="text-align: center">4.454 ± 0.003</td>
+            <td style="text-align: center">4.453 ± 0.003</td>
             <td style="text-align: center">-</td>
             <td style="text-align: center">4.440 ± 0.003</td>
             <td style="text-align: center">-</td>
