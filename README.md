@@ -30,7 +30,7 @@ Lab work on programming in the [ded32](https://github.com/ded32) course on optim
 
 Typically, a **load factor of `0.7` (`70%`) is ideal—balancing memory usage and performance**.
 
-# Context
+# Table of Contents
 
 - [Research of hash functions](#research-of-hash-functions)
     - [LENGTH](#length)
