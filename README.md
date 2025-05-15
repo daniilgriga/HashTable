@@ -384,7 +384,7 @@ Based on the **calculated variance**, the **JENKINS** hash function demonstrates
 
 # Hardware
 
-- **Compiler:** `g++ 13.3.0`
+- **Laptop:** `HP 14s-fq0046ur 14"`
 - **Processor:** `AMD Ryzen 5 4500U 2.3 GHz (4 GHz in Turbo)`
 - **OS:** `Ubuntu 24.04.2 LTS`
 - **RAM:** `16GB, DDR4, 2400MHz SO-DIMM`
@@ -392,6 +392,7 @@ Based on the **calculated variance**, the **JENKINS** hash function demonstrates
 - **Number of processor cores:** `6`
 - **L2 cache size:** `3 MB`
 - **L3 cache size:** `8 MB`
+- **Compiler:** `g++ 13.3.0`
 
 All measurements will be performed at the same processor temperature range from **40°C to 60°C** and with the charger connected.
 
@@ -630,4 +631,4 @@ During this lab work, I did:
 
  - **Optimization 3:** Utilized **inline assembly** for the `CRC32 hash function` to further enhance speed.
 
- - **Achieved final program acceleration:** program performance increased by over **`103%`**.
+ - **Achieved final program acceleration:** program speed (according to the instructions) was **203** of the speed of its base version (**2.03x**).
